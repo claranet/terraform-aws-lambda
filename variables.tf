@@ -35,7 +35,11 @@ variable "description" {
 
 variable "environment_variables" {
   description = "Environment variables for the Lambda function"
-  default     = {}
+
+  # Add a dummy variable because it can't be empty.
+  default = {
+    PLACEHOLDER = "1"
+  }
 }
 
 variable "tags" {
