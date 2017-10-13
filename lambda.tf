@@ -22,4 +22,8 @@ resource "aws_lambda_function" "lambda" {
   runtime          = "${var.runtime}"
   timeout          = "${var.timeout}"
   tags             = "${var.tags}"
+
+  environment {
+    variables = "${var.environment_variables}"
+  }
 }

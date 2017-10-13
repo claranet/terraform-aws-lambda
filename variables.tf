@@ -33,6 +33,11 @@ variable "description" {
   default     = "Managed by Terraform"
 }
 
+variable "environment_variables" {
+  description = "Environment variables for the Lambda function"
+  default     = {}
+}
+
 variable "tags" {
   description = "A mapping of tags"
   default     = {}
