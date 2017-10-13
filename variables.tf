@@ -42,3 +42,13 @@ variable "tags" {
   description = "A mapping of tags"
   default     = {}
 }
+
+variable "policy" {
+  description = "An addional policy to attach to the Lambda function"
+  default     = ""
+}
+
+variable "attach_policy" {
+  description = "Set this to true if using the policy variable"
+  default     = false
+}

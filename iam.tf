@@ -1,3 +1,5 @@
+# Create the role.
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect  = "Allow"
@@ -14,6 +16,8 @@ resource "aws_iam_role" "lambda" {
   name               = "${var.function_name}"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 }
+
+# Attach a policy for logs.
 
 data "aws_iam_policy_document" "logs" {
   statement {
@@ -47,8 +51,25 @@ resource "aws_iam_policy" "logs" {
   policy = "${data.aws_iam_policy_document.logs.json}"
 }
 
-resource "aws_iam_policy_attachment" "lambda" {
+resource "aws_iam_policy_attachment" "logs" {
   name       = "${var.function_name}-logs"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.logs.arn}"
+}
+
+# Attach an additional policy if provided.
+
+resource "aws_iam_policy" "additional" {
+  count = "${var.attach_policy ? 1 : 0}"
+
+  name   = "${var.function_name}"
+  policy = "${var.policy}"
+}
+
+resource "aws_iam_policy_attachment" "additional" {
+  count = "${var.attach_policy ? 1 : 0}"
+
+  name       = "${var.function_name}"
+  roles      = ["${aws_iam_role.lambda.name}"]
+  policy_arn = "${aws_iam_policy.additional.arn}"
 }
