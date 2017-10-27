@@ -1,4 +1,5 @@
 resource "aws_lambda_function" "lambda" {
+  depends_on    = ["aws_cloudwatch_log_group.lambda_log_group"]
   function_name = "${var.function_name}"
   description   = "${var.description}"
   role          = "${aws_iam_role.lambda.arn}"

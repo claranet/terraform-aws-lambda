@@ -24,11 +24,12 @@ module "lambda" {
   attach_policy = true
   policy        = "${data.aws_iam_policy_document.lambda.json}"
 
-  function_name = "deployment-deploy-status"
-  description   = "Deployment deploy status task"
-  handler       = "main.lambda_handler"
-  runtime       = "python3.6"
-  timeout       = 300
+  logs_retention_in_days = 90
+  function_name          = "deployment-deploy-status"
+  description            = "Deployment deploy status task"
+  handler                = "main.lambda_handler"
+  runtime                = "python3.6"
+  timeout                = 300
 
   environment_variables {
     SLACK_URL = "${var.slack_url}"

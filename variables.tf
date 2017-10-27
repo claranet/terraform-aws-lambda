@@ -56,3 +56,8 @@ variable "attach_policy" {
   description = "Set this to true if using the policy variable"
   default     = false
 }
+
+variable "logs_retention_in_days" {
+  description = "Specifies the number of days you want to retain log events"
+  default     = "90"
+}
