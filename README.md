@@ -30,8 +30,14 @@ module "lambda" {
   runtime       = "python3.6"
   timeout       = 300
 
-  environment_variables {
-    SLACK_URL = "${var.slack_url}"
+  environment {
+    variables {
+      SLACK_URL = "${var.slack_url}"
+    }
+  }
+
+  vpc_config {
+    ...
   }
 }
 ```
