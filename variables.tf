@@ -33,13 +33,14 @@ variable "description" {
   default     = "Managed by Terraform"
 }
 
-variable "environment_variables" {
-  description = "Environment variables for the Lambda function"
+variable "environment" {
+  description = "Environment configuration for the Lambda function"
+  default     = {}
+}
 
-  # Add a dummy variable because it can't be empty.
-  default = {
-    PLACEHOLDER = "1"
-  }
+variable "vpc_config" {
+  description = "VPC configuration for the Lambda function"
+  default     = {}
 }
 
 variable "tags" {

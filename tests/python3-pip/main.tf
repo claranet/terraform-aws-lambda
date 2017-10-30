@@ -13,7 +13,7 @@ module "lambda" {
 
   source_dir = "${path.module}/lambda"
 
-  function_name = "tf-aws-lambda-test-build"
+  function_name = "tf-aws-lambda-test-python3-pip"
   description   = "Test python3 pip functionality in tf-aws-lambda"
   handler       = "main.lambda_handler"
   runtime       = "python3.6"
