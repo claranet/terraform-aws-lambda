@@ -15,13 +15,13 @@ resource "aws_iam_user" "test" {
 module "lambda" {
   source = "../../"
 
-  source_file = "${path.module}/lambda.py"
-
   function_name = "tf-aws-lambda-test-environment-variables"
   description   = "Test environment variables in tf-aws-lambda"
   handler       = "lambda.lambda_handler"
   runtime       = "python3.6"
   timeout       = 30
+
+  source_path = "${path.module}/lambda.py"
 
   environment {
     variables {

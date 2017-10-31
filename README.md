@@ -13,16 +13,9 @@ This module creates a Lambda function and hides the ugly parts from you.
 
 ## Usage
 
-### Single file Lambda script
-
 ```js
 module "lambda" {
   source = "tf-aws-lambda"
-
-  source_file = "${path.module}/lambda.py"
-
-  attach_policy = true
-  policy        = "${data.aws_iam_policy_document.lambda.json}"
 
   function_name = "deployment-deploy-status"
   description   = "Deployment deploy status task"
@@ -30,27 +23,25 @@ module "lambda" {
   runtime       = "python3.6"
   timeout       = 300
 
+  // Specify a file or directory for the source code.
+  source_path = "${path.module}/lambda.py"
+
+  // Attach a policy.
+  attach_policy = true
+  policy        = "${data.aws_iam_policy_document.lambda.json}"
+
+  // Add environment variables.
   environment {
     variables {
       SLACK_URL = "${var.slack_url}"
     }
   }
 
+  // Deploy into a VPC.
   attach_vpc_config = true
   vpc_config {
-    ...
+    subnet_ids         = ["${aws_subnet.test.id}"]
+    security_group_ids = ["${aws_security_group.test.id}"]
   }
-}
-```
-
-### Directory of Lambda scripts
-
-```js
-module "lambda" {
-  source = "tf-aws-lambda"
-
-  source_dir = "${path.module}/lambda/"
-
-  ...
 }
 ```

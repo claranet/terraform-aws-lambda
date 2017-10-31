@@ -53,7 +53,9 @@ def list_files(top_path):
 
     for root, dirs, files in os.walk(top_path):
         for file_name in files:
-            results.append(os.path.join(root, file_name))
+            file_path = os.path.join(root, file_name)
+            relative_path = os.path.relpath(file_path, top_path)
+            results.append(relative_path)
 
     results.sort()
     return results
@@ -77,7 +79,9 @@ def tempdir():
 
     """
 
+    print('mktemp -d')
     path = tempfile.mkdtemp(prefix='tf-aws-lambda-')
+    print(path)
     try:
         yield path
     finally:
@@ -102,8 +106,7 @@ def create_zip_file(source_dir, target_file):
 query = json.loads(base64.b64decode(sys.argv[1]))
 filename = query['filename']
 runtime = query['runtime']
-source_dir = query['source_dir']
-source_file = query['source_file']
+source_path = query['source_path']
 
 absolute_filename = os.path.abspath(filename)
 
@@ -112,20 +115,23 @@ absolute_filename = os.path.abspath(filename)
 with tempdir() as temp_dir:
 
     # Find all source files.
-    if source_file:
-        source_dir = os.path.dirname(source_file)
-        source_files = [os.path.basename(source_file)]
-    elif source_dir:
-        source_files = list_files(source_dir)
+    if os.path.isdir(source_path):
+        source_dir = source_path
+        source_files = list_files(source_path)
+    else:
+        source_dir = os.path.dirname(source_path)
+        source_files = [os.path.basename(source_path)]
 
     # Copy them into the temporary directory.
-    for source_path in source_files:
-        relative_path = os.path.relpath(source_path, source_dir)
-        target_path = os.path.join(temp_dir, relative_path)
+    cd(source_dir)
+    for file_name in source_files:
+        target_path = os.path.join(temp_dir, file_name)
         target_dir = os.path.dirname(target_path)
         if not os.path.exists(target_dir):
+            print('mkdir -p {}'.format(target_dir))
             os.makedirs(target_dir)
-        shutil.copyfile(source_path, target_path)
+        print('cp {} {}'.format(file_name, target_path))
+        shutil.copyfile(file_name, target_path)
 
     # Install dependencies into the temporary directory.
     if runtime.startswith('python'):

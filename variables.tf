@@ -18,13 +18,8 @@ variable "timeout" {
   default     = 10
 }
 
-variable "source_dir" {
-  description = "The source directory containing your Lambda scripts (use this or source_file)"
-  default     = ""
-}
-
-variable "source_file" {
-  description = "The file path of your Lambda script  (use this or source_dir)"
+variable "source_path" {
+  description = "The source file or directory containing your Lambda source code"
   default     = ""
 }
 
