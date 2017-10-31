@@ -43,6 +43,11 @@ variable "vpc_config" {
   default     = {}
 }
 
+variable "attach_vpc_config" {
+  description = "Set this to true if using the vpc_config variable"
+  default     = false
+}
+
 variable "tags" {
   description = "A mapping of tags"
   default     = {}
