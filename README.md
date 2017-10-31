@@ -36,6 +36,7 @@ module "lambda" {
     }
   }
 
+  attach_vpc_config = true
   vpc_config {
     ...
   }

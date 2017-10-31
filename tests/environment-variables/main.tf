@@ -8,6 +8,10 @@ provider "aws" {
   region = "eu-west-1"
 }
 
+resource "aws_iam_user" "test" {
+  name = "tf-aws-lambda-test-environment-variables"
+}
+
 module "lambda" {
   source = "../../"
 
@@ -21,8 +25,7 @@ module "lambda" {
 
   environment {
     variables {
-      FIRST  = "value1"
-      SECOND = "value2"
+      ARN = "${aws_iam_user.test.arn}"
     }
   }
 }
