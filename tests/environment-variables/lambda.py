@@ -2,6 +2,5 @@ import os
 
 
 def lambda_handler(event, context):
-    for name in ('FIRST', 'SECOND'):
-        print(os.environ[name])
+    print(os.environ['ARN'])
     return 'test passed'
