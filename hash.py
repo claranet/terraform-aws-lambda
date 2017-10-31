@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #
-# Generates a content hash of the source_dir or source_file, which is used to
-# determine whether the Lambda code has changed, ignoring file modification
-# and access times.
+# Generates a content hash of the source_path, which is used to determine if
+# the Lambda code has changed, ignoring file modification and access times.
 #
 # Outputs a filename and a command to run if the archive needs to be built.
 #
@@ -69,20 +68,21 @@ def list_files(top_path):
     return results
 
 
-def generate_content_hash(source_dir, source_file):
+def generate_content_hash(source_path):
     """
-    Generate a content hash of the source_dir or source_file.
+    Generate a content hash of the source path.
 
     """
 
     sha256 = hashlib.sha256()
 
-    if source_dir:
+    if os.path.isdir(source_path):
+        source_dir = source_path
         for source_file in list_files(source_dir):
             update_hash(sha256, source_dir, source_file)
-
-    elif source_file:
-        source_dir = os.path.dirname(source_file)
+    else:
+        source_dir = os.path.dirname(source_path)
+        source_file = source_path
         update_hash(sha256, source_dir, source_file)
 
     return sha256
@@ -111,25 +111,21 @@ current_dir = os.path.dirname(__file__)
 if len(sys.argv) > 1 and sys.argv[1] == '--test':
     query = {
         'runtime': 'python3.6',
-        'source_dir': os.path.join(current_dir, 'tests', 'pip3', 'lambda'),
-        'source_file': '',
+        'source_path': os.path.join(current_dir, 'tests', 'python3-pip', 'lambda'),
     }
 else:
     query = json.load(sys.stdin)
 runtime = query['runtime']
-source_dir = query['source_dir']
-source_file = query['source_file']
+source_path = query['source_path']
 
 # Validate the query.
-if source_dir and source_file:
-    abort('source_dir and source_file cannot both be set.')
-if not source_dir and not source_file:
-    abort('source_dir or source_file must be set.')
+if not source_path:
+    abort('source_path must be set.')
 
 # Generate a hash based on file names and content. Also use the
 # runtime value and content of build.py because they can have an
 # effect on the resulting archive.
-content_hash = generate_content_hash(source_dir, source_file)
+content_hash = generate_content_hash(source_path)
 content_hash.update(runtime)
 with open(os.path.join(current_dir, 'build.py')) as build_script_file:
     content_hash.update(build_script_file.read())
@@ -145,8 +141,7 @@ build_command = "python '{build_script}' '{build_data}'".format(
     build_script=os.path.join(current_dir, 'build.py'),
     build_data=base64.b64encode(json.dumps({
         'filename': filename,
-        'source_dir': source_dir,
-        'source_file': source_file,
+        'source_path': source_path,
         'runtime': runtime,
     })),
 )
