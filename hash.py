@@ -10,6 +10,7 @@ from __future__ import print_function
 
 import base64
 import datetime
+import errno
 import hashlib
 import json
 import os
@@ -45,11 +46,19 @@ def delete_old_archives():
         for name in os.listdir(top):
             if FILENAME_PATTERN.match(name):
                 path = os.path.join(top, name)
-                file_modified = datetime.datetime.fromtimestamp(
-                    os.path.getmtime(path)
-                )
-                if file_modified < delete_older_than:
-                    os.remove(path)
+                try:
+                    file_modified = datetime.datetime.fromtimestamp(
+                        os.path.getmtime(path)
+                    )
+                    if file_modified < delete_older_than:
+                        os.remove(path)
+                except OSError as error:
+                    if error.errno == errno.ENOENT:
+                        # Ignore "not found" errors as they are probably race
+                        # conditions between multiple usages of this module.
+                        pass
+                    else:
+                        raise
 
 
 def list_files(top_path):
