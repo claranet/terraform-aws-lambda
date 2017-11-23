@@ -104,7 +104,7 @@ def update_hash(hash_obj, file_root, file_path):
     """
 
     relative_path = os.path.relpath(file_path, file_root)
-    hash_obj.update(relative_path)
+    hash_obj.update(relative_path.encode())
 
     with open(file_path, 'rb') as open_file:
         while True:
@@ -135,8 +135,8 @@ if not source_path:
 # runtime value and content of build.py because they can have an
 # effect on the resulting archive.
 content_hash = generate_content_hash(source_path)
-content_hash.update(runtime)
-with open(os.path.join(current_dir, 'build.py')) as build_script_file:
+content_hash.update(runtime.encode())
+with open(os.path.join(current_dir, 'build.py'), 'rb') as build_script_file:
     content_hash.update(build_script_file.read())
 
 # Generate a unique filename based on the hash.
@@ -148,11 +148,13 @@ filename = '.terraform/{prefix}{content_hash}.zip'.format(
 # Determine the command to run if Terraform wants to build a new archive.
 build_command = "python '{build_script}' '{build_data}'".format(
     build_script=os.path.join(current_dir, 'build.py'),
-    build_data=base64.b64encode(json.dumps({
-        'filename': filename,
-        'source_path': source_path,
-        'runtime': runtime,
-    })),
+    build_data=base64.b64encode(
+        json.dumps({
+            'filename': filename,
+            'source_path': source_path,
+            'runtime': runtime,
+        }).encode()
+    ),
 )
 
 # Delete previous archives.
