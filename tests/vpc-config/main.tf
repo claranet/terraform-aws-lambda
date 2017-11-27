@@ -37,29 +37,10 @@ module "lambda" {
 
   source_path = "${path.module}/lambda.py"
 
-  attach_policy = true
-  policy        = "${data.aws_iam_policy_document.lambda.json}"
-
   attach_vpc_config = true
 
   vpc_config {
     subnet_ids         = ["${aws_subnet.test.id}"]
     security_group_ids = ["${aws_security_group.test.id}"]
-  }
-}
-
-data "aws_iam_policy_document" "lambda" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DeleteNetworkInterface",
-    ]
-
-    resources = [
-      "*",
-    ]
   }
 }
