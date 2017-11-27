@@ -57,6 +57,39 @@ resource "aws_iam_policy_attachment" "logs" {
   policy_arn = "${aws_iam_policy.logs.arn}"
 }
 
+# Attach an additional policy required for the VPC config
+
+data "aws_iam_policy_document" "network" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "network" {
+  count = "${var.attach_vpc_config ? 1 : 0}"
+
+  name   = "${var.function_name}-network"
+  policy = "${data.aws_iam_policy_document.network.json}"
+}
+
+resource "aws_iam_policy_attachment" "network" {
+  count = "${var.attach_vpc_config ? 1 : 0}"
+
+  name       = "${var.function_name}-network"
+  roles      = ["${aws_iam_role.lambda.name}"]
+  policy_arn = "${aws_iam_policy.network.arn}"
+}
+
 # Attach an additional policy if provided.
 
 resource "aws_iam_policy" "additional" {
