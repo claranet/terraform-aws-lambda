@@ -1,15 +1,20 @@
 # tf-aws-lambda
 
-This module creates a Lambda function and hides the ugly parts from you.
+This Terraform module creates and uploads an AWS Lambda function and hides the ugly parts from you.
 
 ## Features
 
+* Only appears in the Terraform plan when there are legitimate changes.
 * Creates a standard IAM role and policy for CloudWatch Logs.
   * You can add additional policies if required.
 * Zips up a source file or directory.
 * Installs dependencies from `requirements.txt` for Python functions.
-  * It only does this when the source code changes.
-  * It only shows in the Terraform plan when the source code changes.
+  * It only does this when necessary, not every time.
+
+## Requirements
+
+* Python
+* Linux/Unix
 
 ## Usage
 
