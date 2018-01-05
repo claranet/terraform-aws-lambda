@@ -39,7 +39,7 @@ def delete_old_archives():
     """
 
     now = datetime.datetime.now()
-    delete_older_than = now - datetime.timedelta(hours=6)
+    delete_older_than = now - datetime.timedelta(days=7)
 
     top = '.terraform'
     if os.path.isdir(top):
