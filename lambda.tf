@@ -16,11 +16,7 @@ resource "aws_lambda_function" "lambda_without_vpc" {
 
   # Use a generated filename to determine when the source code has changed.
 
-  filename = "${lookup(data.external.archive.result, "filename")}"
-
-  # Depend on the null_resource to build the file when required.
-
-  depends_on = ["null_resource.archive"]
+  filename = "${lookup(data.external.built.result, "filename")}"
 
   # The aws_lambda_function resource has a schema for the environment
   # variable, where the only acceptable values are:
@@ -55,7 +51,6 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   runtime       = "${var.runtime}"
   timeout       = "${var.timeout}"
   tags          = "${var.tags}"
-  filename      = "${lookup(data.external.archive.result, "filename")}"
-  depends_on    = ["null_resource.archive"]
+  filename      = "${lookup(data.external.built.result, "filename")}"
   environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
