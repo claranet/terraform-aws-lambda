@@ -146,7 +146,7 @@ filename = '.terraform/{prefix}{content_hash}.zip'.format(
 )
 
 # Determine the command to run if Terraform wants to build a new archive.
-build_command = "python '{build_script}' '{build_data}'".format(
+build_command = "'{build_script}' '{build_data}'".format(
     build_script=os.path.join(current_dir, 'build.py'),
     build_data=base64.b64encode(
         json.dumps({
