@@ -18,7 +18,7 @@ import re
 import sys
 
 
-FILENAME_PREFIX = 'tf-aws-lambda-'
+FILENAME_PREFIX = 'terraform-aws-lambda-'
 FILENAME_PATTERN = re.compile(r'^' + FILENAME_PREFIX + r'[0-9a-f]{64}\.zip$')
 
 

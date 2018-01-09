@@ -1,4 +1,4 @@
-# tf-aws-lambda
+# terraform-aws-lambda
 
 This Terraform module creates and uploads an AWS Lambda function and hides the ugly parts from you.
 
@@ -20,7 +20,7 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 
 ```js
 module "lambda" {
-  source = "tf-aws-lambda"
+  source = "github.com/claranet/terraform-aws-lambda"
 
   function_name = "deployment-deploy-status"
   description   = "Deployment deploy status task"
