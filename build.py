@@ -80,7 +80,7 @@ def tempdir():
     """
 
     print('mktemp -d')
-    path = tempfile.mkdtemp(prefix='tf-aws-lambda-')
+    path = tempfile.mkdtemp(prefix='terraform-aws-lambda-')
     print(path)
     try:
         yield path

@@ -9,14 +9,14 @@ provider "aws" {
 }
 
 resource "aws_iam_user" "test" {
-  name = "tf-aws-lambda-test-environment-variables"
+  name = "terraform-aws-lambda-test-environment-variables"
 }
 
 module "lambda" {
   source = "../../"
 
-  function_name = "tf-aws-lambda-test-environment-variables"
-  description   = "Test environment variables in tf-aws-lambda"
+  function_name = "terraform-aws-lambda-test-environment-variables"
+  description   = "Test environment variables in terraform-aws-lambda"
   handler       = "lambda.lambda_handler"
   runtime       = "python3.6"
   timeout       = 30
