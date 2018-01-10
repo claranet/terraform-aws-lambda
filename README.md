@@ -61,13 +61,13 @@ module "lambda" {
 | environment | Environment configuration for the Lambda function | string | `<map>` | no |
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
 | handler | The function entrypoint in your code | string | - | yes |
+| kms_key_arn | The ARN for the KMS encryption key to use to encrypt the Lambda function's parameters. | string | `` | no |
 | policy | An addional policy to attach to the Lambda function | string | `` | no |
 | runtime | The runtime environment for the Lambda function | string | - | yes |
 | source_path | The source file or directory containing your Lambda source code | string | `` | no |
 | tags | A mapping of tags | string | `<map>` | no |
 | timeout | The amount of time your Lambda function had to run in seconds | string | `10` | no |
 | vpc_config | VPC configuration for the Lambda function | string | `<map>` | no |
-| aws_kms_key | A KMS key ARN to use to encrypt the Lambda function's parameters with | string | `<map>` | no |
 
 ## Outputs
 
