@@ -57,3 +57,8 @@ variable "attach_policy" {
   description = "Set this to true if using the policy variable"
   default     = false
 }
+
+variable "kms_key_arn" {
+  description = "The ARN for the KMS encryption key to use to encrypt the Lambda function's parameters."
+  default = ""
+}

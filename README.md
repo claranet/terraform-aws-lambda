@@ -67,6 +67,7 @@ module "lambda" {
 | tags | A mapping of tags | string | `<map>` | no |
 | timeout | The amount of time your Lambda function had to run in seconds | string | `10` | no |
 | vpc_config | VPC configuration for the Lambda function | string | `<map>` | no |
+| aws_kms_key | A KMS key ARN to use to encrypt the Lambda function's parameters with | string | `<map>` | no |
 
 ## Outputs
 
