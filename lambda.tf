@@ -6,7 +6,7 @@ resource "aws_lambda_function" "lambda_without_vpc" {
   # Changes made to this resource should also be made to lambda_with_vpc.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
+  function_name = "${var.function_name}-${random_id.name.hex}"
   description   = "${var.description}"
   role          = "${aws_iam_role.lambda.arn}"
   handler       = "${var.handler}"
@@ -44,7 +44,7 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   # Everything below here should match the lambda_without_vpc resource.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
+  function_name = "${var.function_name}-${random_id.name.hex}"
   description   = "${var.description}"
   role          = "${aws_iam_role.lambda.arn}"
   handler       = "${var.handler}"

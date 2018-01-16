@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = "${var.function_name}"
+  name               = "${var.function_name}-${random_id.name.hex}"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 }
 
@@ -47,12 +47,12 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_iam_policy" "logs" {
-  name   = "${var.function_name}-logs"
+  name   = "${var.function_name}-logs-${random_id.name.hex}"
   policy = "${data.aws_iam_policy_document.logs.json}"
 }
 
 resource "aws_iam_policy_attachment" "logs" {
-  name       = "${var.function_name}-logs"
+  name       = "${var.function_name}-logs-${random_id.name.hex}"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.logs.arn}"
 }
@@ -78,14 +78,14 @@ data "aws_iam_policy_document" "network" {
 resource "aws_iam_policy" "network" {
   count = "${var.attach_vpc_config ? 1 : 0}"
 
-  name   = "${var.function_name}-network"
+  name   = "${var.function_name}-network-${random_id.name.hex}"
   policy = "${data.aws_iam_policy_document.network.json}"
 }
 
 resource "aws_iam_policy_attachment" "network" {
   count = "${var.attach_vpc_config ? 1 : 0}"
 
-  name       = "${var.function_name}-network"
+  name       = "${var.function_name}-network-${random_id.name.hex}"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.network.arn}"
 }
@@ -95,14 +95,14 @@ resource "aws_iam_policy_attachment" "network" {
 resource "aws_iam_policy" "additional" {
   count = "${var.attach_policy ? 1 : 0}"
 
-  name   = "${var.function_name}"
+  name   = "${var.function_name}-${random_id.name.hex}"
   policy = "${var.policy}"
 }
 
 resource "aws_iam_policy_attachment" "additional" {
   count = "${var.attach_policy ? 1 : 0}"
 
-  name       = "${var.function_name}"
+  name       = "${var.function_name}-${random_id.name.hex}"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.additional.arn}"
 }
