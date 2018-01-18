@@ -90,6 +90,33 @@ resource "aws_iam_policy_attachment" "network" {
   policy_arn = "${aws_iam_policy.network.arn}"
 }
 
+# Attach an additional policy for KMS
+
+data "aws_iam_policy_document" "kms" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+    ]
+
+    resources = [
+      "${var.kms_key_arn == "" ? lookup(data.external.default_lambda_kms_arn.result, "default_lambda_kms_arn") : var.kms_key_arn}",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "kms" {
+  name   = "${var.function_name}-kms"
+  policy = "${data.aws_iam_policy_document.kms.json}"
+}
+
+resource "aws_iam_policy_attachment" "kms" {
+  name       = "${var.function_name}-kms"
+  roles      = ["${aws_iam_role.lambda.name}"]
+  policy_arn = "${aws_iam_policy.kms.arn}"
+}
+
 # Attach an additional policy if provided.
 
 resource "aws_iam_policy" "additional" {

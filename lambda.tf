@@ -13,6 +13,8 @@ resource "aws_lambda_function" "lambda_without_vpc" {
   runtime       = "${var.runtime}"
   timeout       = "${var.timeout}"
   tags          = "${var.tags}"
+  kms_key_arn   = "${var.kms_key_arn == "" ? lookup(data.external.default_lambda_kms_arn.result, "default_lambda_kms_arn") : var.kms_key_arn}"
+
 
   # Use a generated filename to determine when the source code has changed.
 
@@ -51,6 +53,7 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   runtime       = "${var.runtime}"
   timeout       = "${var.timeout}"
   tags          = "${var.tags}"
+  kms_key_arn   = "${var.kms_key_arn == "" ? lookup(data.external.default_lambda_kms_arn.result, "default_lambda_kms_arn") : var.kms_key_arn}"
   filename      = "${lookup(data.external.built.result, "filename")}"
   environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
