@@ -1,11 +1,11 @@
 output "function_arn" {
   description = "The ARN of the Lambda function"
-  value       = "${element(concat(aws_lambda_function.lambda_with_vpc.*.arn, aws_lambda_function.lambda_without_vpc.*.arn), 0)}"
+  value       = "${lookup(element(concat(aws_lambda_function.lambda.*, aws_lambda_function.lambda_with_dl.*, aws_lambda_function.lambda_with_vpc.*, aws_lambda_function.lambda_with_dl_and_vpc.*), 0), "arn")}"
 }
 
 output "function_name" {
   description = "The name of the Lambda function"
-  value       = "${element(concat(aws_lambda_function.lambda_with_vpc.*.function_name, aws_lambda_function.lambda_without_vpc.*.function_name), 0)}"
+  value       = "${lookup(element(concat(aws_lambda_function.lambda.*, aws_lambda_function.lambda_with_dl.*, aws_lambda_function.lambda_with_vpc.*, aws_lambda_function.lambda_with_dl_and_vpc.*), 0), "function_name")}"
 }
 
 output "role_arn" {

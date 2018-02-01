@@ -36,6 +36,18 @@ variable "environment" {
   default     = {}
 }
 
+variable "dead_letter_config" {
+  description = "Dead letter configuration for the Lambda function"
+  type        = "map"
+  default     = {}
+}
+
+variable "attach_dead_letter_config" {
+  description = "Set this to true if using the dead_letter_config variable"
+  type        = "string"
+  default     = false
+}
+
 variable "vpc_config" {
   description = "VPC configuration for the Lambda function"
   type        = "map"

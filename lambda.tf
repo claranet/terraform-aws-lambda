@@ -1,9 +1,9 @@
-resource "aws_lambda_function" "lambda_without_vpc" {
-  count = "${var.attach_vpc_config ? 0 : 1}"
+resource "aws_lambda_function" "lambda" {
+  count = "${! var.attach_vpc_config && ! var.attach_dead_letter_config ? 1 : 0}"
 
   # ----------------------------------------------------------------------------
   # IMPORTANT:
-  # Changes made to this resource should also be made to lambda_with_vpc.
+  # Changes made to this resource should also be made to lambda_with_* below.
   # ----------------------------------------------------------------------------
 
   function_name = "${var.function_name}"
@@ -29,11 +29,65 @@ resource "aws_lambda_function" "lambda_without_vpc" {
   environment = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
 
-resource "aws_lambda_function" "lambda_with_vpc" {
-  count = "${var.attach_vpc_config ? 1 : 0}"
+# The vpc_config and dead_letter_config variables are lists of maps which,
+# due to a bug or missing feature of Terraform, do not work with computed
+# values. So here is a copy and paste of of the above resource for every
+# combination of these variables.
 
-  # Add the VPC config. I couldn't find any other way to make this optional
-  # and still work with computed values, so copy/paste the whole resource.
+resource "aws_lambda_function" "lambda_with_dl" {
+  count = "${var.attach_dead_letter_config && ! var.attach_vpc_config ? 1 : 0}"
+
+  dead_letter_config {
+    target_arn = "${var.dead_letter_config["target_arn"]}"
+  }
+
+  # ----------------------------------------------------------------------------
+  # IMPORTANT:
+  # Everything below here should match the lambda_without_vpc resource.
+  # ----------------------------------------------------------------------------
+
+  function_name = "${var.function_name}"
+  description   = "${var.description}"
+  role          = "${aws_iam_role.lambda.arn}"
+  handler       = "${var.handler}"
+  runtime       = "${var.runtime}"
+  timeout       = "${var.timeout}"
+  tags          = "${var.tags}"
+  filename      = "${lookup(data.external.built.result, "filename")}"
+  environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
+}
+
+resource "aws_lambda_function" "lambda_with_vpc" {
+  count = "${var.attach_vpc_config && ! var.attach_dead_letter_config ? 1 : 0}"
+
+  vpc_config {
+    security_group_ids = ["${var.vpc_config["security_group_ids"]}"]
+    subnet_ids         = ["${var.vpc_config["subnet_ids"]}"]
+  }
+
+  # ----------------------------------------------------------------------------
+  # IMPORTANT:
+  # Everything below here should match the lambda resource.
+  # ----------------------------------------------------------------------------
+
+  function_name = "${var.function_name}"
+  description   = "${var.description}"
+  role          = "${aws_iam_role.lambda.arn}"
+  handler       = "${var.handler}"
+  runtime       = "${var.runtime}"
+  timeout       = "${var.timeout}"
+  tags          = "${var.tags}"
+  filename      = "${lookup(data.external.built.result, "filename")}"
+  environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
+}
+
+resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
+  count = "${var.attach_dead_letter_config && var.attach_vpc_config ? 1 : 0}"
+
+  dead_letter_config {
+    target_arn = "${var.dead_letter_config["target_arn"]}"
+  }
+
   vpc_config {
     security_group_ids = ["${var.vpc_config["security_group_ids"]}"]
     subnet_ids         = ["${var.vpc_config["subnet_ids"]}"]

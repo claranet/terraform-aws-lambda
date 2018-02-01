@@ -35,6 +35,12 @@ module "lambda" {
   attach_policy = true
   policy        = "${data.aws_iam_policy_document.lambda.json}"
 
+  // Add a dead letter queue.
+  attach_dead_letter_config = true
+  dead_letter_config {
+    target_arn = "${var.dead_letter_queue_arn}"
+  }
+
   // Add environment variables.
   environment {
     variables {
@@ -62,8 +68,10 @@ function name unique per region, for example by setting
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| attach_dead_letter_config | Set this to true if using the dead_letter_config variable | string | `false` | no |
 | attach_policy | Set this to true if using the policy variable | string | `false` | no |
 | attach_vpc_config | Set this to true if using the vpc_config variable | string | `false` | no |
+| dead_letter_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `Managed by Terraform` | no |
 | environment | Environment configuration for the Lambda function | map | `<map>` | no |
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
