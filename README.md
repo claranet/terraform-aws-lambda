@@ -35,6 +35,12 @@ module "lambda" {
   attach_policy = true
   policy        = "${data.aws_iam_policy_document.lambda.json}"
 
+  // Add a dead letter queue.
+  attach_dead_letter_config = true
+  dead_letter_config {
+    target_arn = "${var.dead_letter_queue_arn}"
+  }
+
   // Add environment variables.
   environment {
     variables {
@@ -62,18 +68,20 @@ function name unique per region, for example by setting
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| attach_dead_letter_config | Set this to true if using the dead_letter_config variable | string | `false` | no |
 | attach_policy | Set this to true if using the policy variable | string | `false` | no |
 | attach_vpc_config | Set this to true if using the vpc_config variable | string | `false` | no |
+| dead_letter_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `Managed by Terraform` | no |
-| environment | Environment configuration for the Lambda function | string | `<map>` | no |
+| environment | Environment configuration for the Lambda function | map | `<map>` | no |
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
 | handler | The function entrypoint in your code | string | - | yes |
 | policy | An addional policy to attach to the Lambda function | string | `` | no |
 | runtime | The runtime environment for the Lambda function | string | - | yes |
-| source_path | The source file or directory containing your Lambda source code | string | `` | no |
-| tags | A mapping of tags | string | `<map>` | no |
+| source_path | The source file or directory containing your Lambda source code | string | - | yes |
+| tags | A mapping of tags | map | `<map>` | no |
 | timeout | The amount of time your Lambda function had to run in seconds | string | `10` | no |
-| vpc_config | VPC configuration for the Lambda function | string | `<map>` | no |
+| vpc_config | VPC configuration for the Lambda function | map | `<map>` | no |
 
 ## Outputs
 
