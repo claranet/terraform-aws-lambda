@@ -76,7 +76,9 @@ function name unique per region, for example by setting
 | environment | Environment configuration for the Lambda function | map | `<map>` | no |
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
 | handler | The function entrypoint in your code | string | - | yes |
+| memory_size | Amount of memory in MB your Lambda function can use at runtime | string | `128` | no |
 | policy | An addional policy to attach to the Lambda function | string | `` | no |
+| reserved_concurrent_executions | The amount of reserved concurrent executions for this Lambda function | string | `0` | no |
 | runtime | The runtime environment for the Lambda function | string | - | yes |
 | source_path | The source file or directory containing your Lambda source code | string | - | yes |
 | tags | A mapping of tags | map | `<map>` | no |

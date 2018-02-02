@@ -8,6 +8,18 @@ variable "handler" {
   type        = "string"
 }
 
+variable "memory_size" {
+  description = "Amount of memory in MB your Lambda function can use at runtime"
+  type        = "string"
+  default     = 128
+}
+
+variable "reserved_concurrent_executions" {
+  description = "The amount of reserved concurrent executions for this Lambda function"
+  type        = "string"
+  default     = 0
+}
+
 variable "runtime" {
   description = "The runtime environment for the Lambda function"
   type        = "string"

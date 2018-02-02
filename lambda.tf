@@ -6,13 +6,15 @@ resource "aws_lambda_function" "lambda" {
   # Changes made to this resource should also be made to lambda_with_* below.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
-  description   = "${var.description}"
-  role          = "${aws_iam_role.lambda.arn}"
-  handler       = "${var.handler}"
-  runtime       = "${var.runtime}"
-  timeout       = "${var.timeout}"
-  tags          = "${var.tags}"
+  function_name                  = "${var.function_name}"
+  description                    = "${var.description}"
+  role                           = "${aws_iam_role.lambda.arn}"
+  handler                        = "${var.handler}"
+  memory_size                    = "${var.memory_size}"
+  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
+  runtime                        = "${var.runtime}"
+  timeout                        = "${var.timeout}"
+  tags                           = "${var.tags}"
 
   # Use a generated filename to determine when the source code has changed.
 
@@ -46,15 +48,17 @@ resource "aws_lambda_function" "lambda_with_dl" {
   # Everything below here should match the lambda_without_vpc resource.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
-  description   = "${var.description}"
-  role          = "${aws_iam_role.lambda.arn}"
-  handler       = "${var.handler}"
-  runtime       = "${var.runtime}"
-  timeout       = "${var.timeout}"
-  tags          = "${var.tags}"
-  filename      = "${lookup(data.external.built.result, "filename")}"
-  environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
+  function_name                  = "${var.function_name}"
+  description                    = "${var.description}"
+  role                           = "${aws_iam_role.lambda.arn}"
+  handler                        = "${var.handler}"
+  memory_size                    = "${var.memory_size}"
+  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
+  runtime                        = "${var.runtime}"
+  timeout                        = "${var.timeout}"
+  tags                           = "${var.tags}"
+  filename                       = "${lookup(data.external.built.result, "filename")}"
+  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
 
 resource "aws_lambda_function" "lambda_with_vpc" {
@@ -70,15 +74,17 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   # Everything below here should match the lambda resource.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
-  description   = "${var.description}"
-  role          = "${aws_iam_role.lambda.arn}"
-  handler       = "${var.handler}"
-  runtime       = "${var.runtime}"
-  timeout       = "${var.timeout}"
-  tags          = "${var.tags}"
-  filename      = "${lookup(data.external.built.result, "filename")}"
-  environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
+  function_name                  = "${var.function_name}"
+  description                    = "${var.description}"
+  role                           = "${aws_iam_role.lambda.arn}"
+  handler                        = "${var.handler}"
+  memory_size                    = "${var.memory_size}"
+  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
+  runtime                        = "${var.runtime}"
+  timeout                        = "${var.timeout}"
+  tags                           = "${var.tags}"
+  filename                       = "${lookup(data.external.built.result, "filename")}"
+  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
 
 resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
@@ -98,13 +104,15 @@ resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
   # Everything below here should match the lambda_without_vpc resource.
   # ----------------------------------------------------------------------------
 
-  function_name = "${var.function_name}"
-  description   = "${var.description}"
-  role          = "${aws_iam_role.lambda.arn}"
-  handler       = "${var.handler}"
-  runtime       = "${var.runtime}"
-  timeout       = "${var.timeout}"
-  tags          = "${var.tags}"
-  filename      = "${lookup(data.external.built.result, "filename")}"
-  environment   = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
+  function_name                  = "${var.function_name}"
+  description                    = "${var.description}"
+  role                           = "${aws_iam_role.lambda.arn}"
+  handler                        = "${var.handler}"
+  memory_size                    = "${var.memory_size}"
+  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
+  runtime                        = "${var.runtime}"
+  timeout                        = "${var.timeout}"
+  tags                           = "${var.tags}"
+  filename                       = "${lookup(data.external.built.result, "filename")}"
+  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
