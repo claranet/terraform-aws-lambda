@@ -15,11 +15,13 @@ resource "aws_iam_user" "test" {
 module "lambda" {
   source = "../../"
 
-  function_name = "terraform-aws-lambda-test-environment-variables"
-  description   = "Test environment variables in terraform-aws-lambda"
-  handler       = "lambda.lambda_handler"
-  runtime       = "python3.6"
-  timeout       = 30
+  function_name                  = "terraform-aws-lambda-test-environment-variables"
+  description                    = "Test environment variables in terraform-aws-lambda"
+  handler                        = "lambda.lambda_handler"
+  memory_size                    = 256
+  reserved_concurrent_executions = 3
+  runtime                        = "python3.6"
+  timeout                        = 30
 
   source_path = "${path.module}/lambda.py"
 
