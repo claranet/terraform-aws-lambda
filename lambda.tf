@@ -18,7 +18,8 @@ resource "aws_lambda_function" "lambda" {
 
   # Use a generated filename to determine when the source code has changed.
 
-  filename = "${lookup(data.external.built.result, "filename")}"
+  filename   = "${lookup(data.external.built.result, "filename")}"
+  depends_on = ["null_resource.archive"]
 
   # The aws_lambda_function resource has a schema for the environment
   # variable, where the only acceptable values are:
@@ -58,6 +59,7 @@ resource "aws_lambda_function" "lambda_with_dl" {
   timeout                        = "${var.timeout}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
+  depends_on                     = ["null_resource.archive"]
   environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
 
@@ -84,6 +86,7 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   timeout                        = "${var.timeout}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
+  depends_on                     = ["null_resource.archive"]
   environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
 
@@ -114,5 +117,6 @@ resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
   timeout                        = "${var.timeout}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
+  depends_on                     = ["null_resource.archive"]
   environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }
