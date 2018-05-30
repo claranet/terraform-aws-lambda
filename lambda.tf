@@ -3,7 +3,7 @@ resource "aws_lambda_function" "lambda" {
 
   # ----------------------------------------------------------------------------
   # IMPORTANT:
-  # Changes made to this resource should also be made to lambda_with_* below.
+  # Changes made to this resource should also be made to "lambda_with_*" below.
   # ----------------------------------------------------------------------------
 
   function_name                  = "${var.function_name}"
@@ -46,7 +46,7 @@ resource "aws_lambda_function" "lambda_with_dl" {
 
   # ----------------------------------------------------------------------------
   # IMPORTANT:
-  # Everything below here should match the lambda_without_vpc resource.
+  # Everything below here should match the "lambda" resource.
   # ----------------------------------------------------------------------------
 
   function_name                  = "${var.function_name}"
@@ -73,7 +73,7 @@ resource "aws_lambda_function" "lambda_with_vpc" {
 
   # ----------------------------------------------------------------------------
   # IMPORTANT:
-  # Everything below here should match the lambda resource.
+  # Everything below here should match the "lambda" resource.
   # ----------------------------------------------------------------------------
 
   function_name                  = "${var.function_name}"
@@ -104,7 +104,7 @@ resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
 
   # ----------------------------------------------------------------------------
   # IMPORTANT:
-  # Everything below here should match the lambda_without_vpc resource.
+  # Everything below here should match the "lambda" resource.
   # ----------------------------------------------------------------------------
 
   function_name                  = "${var.function_name}"
