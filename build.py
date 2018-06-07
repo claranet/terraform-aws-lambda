@@ -1,10 +1,8 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #
 # Builds a zip file from the source_dir or source_file.
 # Installs dependencies with pip automatically.
 #
-
-from __future__ import print_function
 
 import base64
 import json
@@ -101,9 +99,8 @@ def create_zip_file(source_dir, target_file):
     cd(source_dir)
     run('zip', '-r', target_file, '.')
 
-
-# Parse the data from hash.py
-query = json.loads(base64.b64decode(sys.argv[1]))
+json_payload = base64.b64decode(sys.argv[1])
+query = json.loads(json_payload)
 filename = query['filename']
 runtime = query['runtime']
 source_path = query['source_path']
