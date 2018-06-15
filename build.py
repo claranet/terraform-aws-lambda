@@ -99,7 +99,7 @@ def create_zip_file(source_dir, target_file):
     cd(source_dir)
     run('zip', '-r', target_file, '.')
 
-json_payload = base64.b64decode(sys.argv[1])
+json_payload = bytes.decode(base64.b64decode(sys.argv[1]))
 query = json.loads(json_payload)
 filename = query['filename']
 runtime = query['runtime']
