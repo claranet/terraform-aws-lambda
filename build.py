@@ -15,15 +15,20 @@ import tempfile
 from contextlib import contextmanager
 
 
+@contextmanager
 def cd(path):
     """
     Changes the working directory.
 
     """
 
-    if os.getcwd() != path:
-        print('cd', path)
+    cwd = os.getcwd()
+    print('cd', path)
+    try:
         os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 def format_command(command):
@@ -119,26 +124,26 @@ with tempdir() as temp_dir:
         source_files = [os.path.basename(source_path)]
 
     # Copy them into the temporary directory.
-    cd(source_dir)
-    for file_name in source_files:
-        target_path = os.path.join(temp_dir, file_name)
-        target_dir = os.path.dirname(target_path)
-        if not os.path.exists(target_dir):
-            print('mkdir -p {}'.format(target_dir))
-            os.makedirs(target_dir)
-        print('cp {} {}'.format(file_name, target_path))
-        shutil.copyfile(file_name, target_path)
+    with cd(source_dir):
+        for file_name in source_files:
+            target_path = os.path.join(temp_dir, file_name)
+            target_dir = os.path.dirname(target_path)
+            if not os.path.exists(target_dir):
+                print('mkdir -p {}'.format(target_dir))
+                os.makedirs(target_dir)
+            print('cp {} {}'.format(file_name, target_path))
+            shutil.copyfile(file_name, target_path)
 
     # Install dependencies into the temporary directory.
     if runtime.startswith('python'):
         requirements = os.path.join(temp_dir, 'requirements.txt')
         if os.path.exists(requirements):
-            cd(temp_dir)
-            if runtime.startswith('python3'):
-                pip_command = 'pip3'
-            else:
-                pip_command = 'pip2'
-            run(pip_command, 'install', '-r', 'requirements.txt', '-t', '.')
+            with cd(temp_dir):
+                if runtime.startswith('python3'):
+                    pip_command = 'pip3'
+                else:
+                    pip_command = 'pip2'
+                run(pip_command, 'install', '-r', 'requirements.txt', '-t', '.')
 
     # Zip up the temporary directory and write it to the target filename.
     # This will be used by the Lambda function as the source code package.
