@@ -89,3 +89,9 @@ variable "attach_policy" {
   type        = "string"
   default     = false
 }
+
+variable "python_cmd" {
+  description = "Entry point of the python binary for external python scripts"
+  type        = "list"
+  default     = []
+}
