@@ -1,7 +1,13 @@
+locals {
+  archive_external_cmd      = "${concat(var.python_cmd, list("${path.module}/hash.py"))}"
+  archive_null_resource_cmd = "${concat(var.python_cmd, list(lookup(data.external.archive.result, "build_command")))}"
+  built_external_cmd        = "${concat(var.python_cmd, list("${path.module}/built.py"))}"
+}
+
 # Generates a filename for the zip archive based on the contents of the files
 # in source_path. The filename will change when the source code changes.
 data "external" "archive" {
-  program = ["${path.module}/hash.py"]
+  program = ["${local.archive_external_cmd}"]
 
   query = {
     runtime     = "${var.runtime}"
@@ -16,7 +22,7 @@ resource "null_resource" "archive" {
   }
 
   provisioner "local-exec" {
-    command = "${lookup(data.external.archive.result, "build_command")}"
+    command = "${join(" ", local.archive_null_resource_cmd)}"
   }
 }
 
@@ -26,7 +32,7 @@ resource "null_resource" "archive" {
 # deletes the Lambda function. If the file is rebuilt here, the build
 # output is unfortunately invisible.
 data "external" "built" {
-  program = ["${path.module}/built.py"]
+  program = ["${local.built_external_cmd}"]
 
   query = {
     build_command = "${lookup(data.external.archive.result, "build_command")}"
