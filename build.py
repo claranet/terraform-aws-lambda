@@ -101,7 +101,11 @@ def create_zip_file(source_dir, target_file):
     target_dir = os.path.dirname(target_file)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    shutil.make_archive(target_file, format='zip', root_dir=source_dir)
+    base, ext = os.path.splitext(target_file)
+    shutil.make_archive(
+        base if ext == '.zip' else target_file,
+        format='zip',
+        root_dir=source_dir)
 
 json_payload = bytes.decode(base64.b64decode(sys.argv[1]))
 query = json.loads(json_payload)
@@ -147,5 +151,5 @@ with tempdir() as temp_dir:
 
     # Zip up the temporary directory and write it to the target filename.
     # This will be used by the Lambda function as the source code package.
-    create_zip_file(temp_dir, os.path.splitext(absolute_filename)[0])
+    create_zip_file(temp_dir, absolute_filename)
     print('Created {}'.format(filename))
