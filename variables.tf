@@ -78,14 +78,14 @@ variable "tags" {
   default     = {}
 }
 
-variable "policy" {
-  description = "An addional policy to attach to the Lambda function"
+variable "policy_arn" {
+  description = "An addional policy (ARN) to attach to the Lambda function"
   type        = "string"
   default     = ""
 }
 
 variable "attach_policy" {
-  description = "Set this to true if using the policy variable"
+  description = "Set this to true if using the policy_arn variable"
   type        = "string"
   default     = false
 }

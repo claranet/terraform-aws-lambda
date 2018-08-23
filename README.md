@@ -33,7 +33,7 @@ module "lambda" {
 
   // Attach a policy.
   attach_policy = true
-  policy        = "${data.aws_iam_policy_document.lambda.json}"
+  policy_arn    = "${data.aws_iam_policy.lambda.arn}"
 
   // Add a dead letter queue.
   attach_dead_letter_config = true
@@ -77,7 +77,7 @@ function name unique per region, for example by setting
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
 | handler | The function entrypoint in your code | string | - | yes |
 | memory_size | Amount of memory in MB your Lambda function can use at runtime | string | `128` | no |
-| policy | An addional policy to attach to the Lambda function | string | `` | no |
+| policy_arn | An addional policy (ARN) to attach to the Lambda function | string | `` | no |
 | reserved_concurrent_executions | The amount of reserved concurrent executions for this Lambda function | string | `0` | no |
 | runtime | The runtime environment for the Lambda function | string | - | yes |
 | source_path | The source file or directory containing your Lambda source code | string | - | yes |
