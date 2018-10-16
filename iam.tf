@@ -127,7 +127,22 @@ resource "aws_iam_policy_attachment" "network" {
 # Attach an additional policy if provided.
 
 resource "aws_iam_role_policy_attachment" "additional" {
-  count      = "${var.attach_policy ? 1 : 0}"
+  count      = "${var.attach_policy_arn ? 1 : 0}"
   role       = "${aws_iam_role.lambda.name}"
   policy_arn = "${var.policy_arn}"
+}
+
+resource "aws_iam_policy" "additional" {
+  count = "${var.attach_policy ? 1 : 0}"
+
+  name   = "${var.function_name}"
+  policy = "${var.policy}"
+}
+
+resource "aws_iam_policy_attachment" "additional" {
+  count = "${var.attach_policy ? 1 : 0}"
+
+  name       = "${var.function_name}"
+  roles      = ["${aws_iam_role.lambda.name}"]
+  policy_arn = "${aws_iam_policy.additional.arn}"
 }

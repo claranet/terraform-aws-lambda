@@ -84,8 +84,20 @@ variable "policy_arn" {
   default     = ""
 }
 
-variable "attach_policy" {
+variable "policy" {
+  description = "An addional policy to attach to the Lambda function"
+  type        = "string"
+  default     = ""
+}
+
+variable "attach_policy_arn" {
   description = "Set this to true if using the policy_arn variable"
+  type        = "string"
+  default     = false
+}
+
+variable "attach_policy" {
+  description = "Set this to true if using the policy variable"
   type        = "string"
   default     = false
 }

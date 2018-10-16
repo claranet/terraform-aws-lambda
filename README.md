@@ -33,6 +33,8 @@ module "lambda" {
 
   // Attach a policy.
   attach_policy = true
+  policy        = "${data.aws_iam_policy_document.lambda.json}"
+  attach_policy_arn = true
   policy_arn    = "${data.aws_iam_policy.lambda.arn}"
 
   // Add a dead letter queue.
@@ -70,6 +72,7 @@ function name unique per region, for example by setting
 |------|-------------|:----:|:-----:|:-----:|
 | attach_dead_letter_config | Set this to true if using the dead_letter_config variable | string | `false` | no |
 | attach_policy | Set this to true if using the policy variable | string | `false` | no |
+| attach_policy_arn | Set this to true if using the policy_arn variable | string | `false` | no |
 | attach_vpc_config | Set this to true if using the vpc_config variable | string | `false` | no |
 | dead_letter_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `Managed by Terraform` | no |
@@ -77,6 +80,7 @@ function name unique per region, for example by setting
 | function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
 | handler | The function entrypoint in your code | string | - | yes |
 | memory_size | Amount of memory in MB your Lambda function can use at runtime | string | `128` | no |
+| policy | An addional policy to attach to the Lambda function | string | `` | no |
 | policy_arn | An addional policy (ARN) to attach to the Lambda function | string | `` | no |
 | reserved_concurrent_executions | The amount of reserved concurrent executions for this Lambda function | string | `0` | no |
 | runtime | The runtime environment for the Lambda function | string | - | yes |
