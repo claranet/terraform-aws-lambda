@@ -78,22 +78,20 @@ variable "tags" {
   default     = {}
 }
 
-variable "policy_arn" {
-  description = "An addional policy (ARN) to attach to the Lambda function"
-  type        = "string"
-  default     = ""
+variable "policy_arns" {
+  description = "Addional policies (ARNs) to attach to the Lambda function."
+  type        = "list"
+  default     = []
 }
+variable "policy_arn_count" {
+  description = "The number of policies to expect in the policy_arns list. Note: required due to known Terraform issues: https://github.com/hashicorp/terraform/issues/17421"
+}
+
 
 variable "policy" {
   description = "An addional policy to attach to the Lambda function"
   type        = "string"
   default     = ""
-}
-
-variable "attach_policy_arn" {
-  description = "Set this to true if using the policy_arn variable"
-  type        = "string"
-  default     = false
 }
 
 variable "attach_policy" {
