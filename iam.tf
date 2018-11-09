@@ -20,6 +20,8 @@ resource "aws_iam_role" "lambda" {
 # Attach a policy for logs.
 
 data "aws_iam_policy_document" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   statement {
     effect = "Allow"
 
@@ -47,11 +49,15 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_iam_policy" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   name   = "${var.function_name}-logs"
   policy = "${data.aws_iam_policy_document.logs.json}"
 }
 
 resource "aws_iam_policy_attachment" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   name       = "${var.function_name}-logs"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.logs.arn}"

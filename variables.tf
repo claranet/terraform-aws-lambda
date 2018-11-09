@@ -89,3 +89,9 @@ variable "attach_policy" {
   type        = "string"
   default     = false
 }
+
+variable "enable_cloudwatch_logs" {
+  description = "Set this to false to disable logging your Lambda output to Cloudwatch Logs"
+  type        = "string"
+  default     = true
+}
