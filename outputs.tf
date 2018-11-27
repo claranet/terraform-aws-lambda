@@ -8,6 +8,11 @@ output "function_name" {
   value       = "${element(concat(aws_lambda_function.lambda.*.function_name, aws_lambda_function.lambda_with_dl.*.function_name, aws_lambda_function.lambda_with_vpc.*.function_name, aws_lambda_function.lambda_with_dl_and_vpc.*.function_name), 0)}"
 }
 
+output "invoke_arn" {
+  description = "The ARN to be used for invoking the Lambda Function from API Gateway"
+  value       = "${element(concat(aws_lambda_function.lambda.*.invoke_arn, aws_lambda_function.lambda_with_dl.*.invoke_arn, aws_lambda_function.lambda_with_vpc.*.invoke_arn, aws_lambda_function.lambda_with_dl_and_vpc.*.invoke_arn), 0)}"
+}
+
 output "role_arn" {
   description = "The ARN of the IAM role created for the Lambda function"
   value       = "${aws_iam_role.lambda.arn}"
