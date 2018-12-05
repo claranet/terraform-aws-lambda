@@ -71,6 +71,7 @@ function name unique per region, for example by setting
 | attach_dead_letter_config | Set this to true if using the dead_letter_config variable | string | `false` | no |
 | attach_policy | Set this to true if using the policy variable | string | `false` | no |
 | attach_vpc_config | Set this to true if using the vpc_config variable | string | `false` | no |
+| enable_cloudwatch_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | string | `true` | no |
 | dead_letter_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `Managed by Terraform` | no |
 | environment | Environment configuration for the Lambda function | map | `<map>` | no |
