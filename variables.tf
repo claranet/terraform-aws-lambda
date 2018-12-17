@@ -32,8 +32,9 @@ variable "timeout" {
 }
 
 variable "source_path" {
-  description = "The source file or directory containing your Lambda source code"
+  description = "The source file or directory containing your Lambda source code. Ignored when `source_from_s3` = `true`"
   type        = "string"
+  default     = ""
 }
 
 variable "build_command" {
@@ -82,6 +83,22 @@ variable "attach_vpc_config" {
   description = "Set this to true if using the vpc_config variable"
   type        = "string"
   default     = false
+}
+
+variable "source_from_s3" {
+  description = "Set this to true if fetching the Lambda source code from S3."
+  type        = "string"
+  default     = false
+}
+
+variable "s3_bucket" {
+    description = "The S3 bucket location containing the function's deployment package. Required when `source_from_s3` = `true`. This bucket must reside in the same AWS region where you are creating the Lambda function."
+    type        = "string"
+}
+
+variable "s3_key" {
+    description = "The S3 key of an object containing the function's deployment package. Required when `source_from_s3` = `true`"
+    type        = "string"
 }
 
 variable "tags" {
