@@ -46,8 +46,8 @@ resource "aws_lambda_function" "lambda_s3" {
   timeout                        = "${var.timeout}"
   tags                           = "${var.tags}"
 
-  s3_bucket                      = "${var.s3_bucket}"
-  s3_key                         = "${var.s3_key}"
+  s3_bucket = "${var.s3_bucket}"
+  s3_key    = "${var.s3_key}"
 
   # The aws_lambda_function resource has a schema for the environment
   # variable, where the only acceptable values are:

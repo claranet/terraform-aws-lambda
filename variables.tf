@@ -94,11 +94,13 @@ variable "source_from_s3" {
 variable "s3_bucket" {
     description = "The S3 bucket location containing the function's deployment package. Required when `source_from_s3` = `true`. This bucket must reside in the same AWS region where you are creating the Lambda function."
     type        = "string"
+    default     = ""
 }
 
 variable "s3_key" {
     description = "The S3 key of an object containing the function's deployment package. Required when `source_from_s3` = `true`"
     type        = "string"
+    default     = ""
 }
 
 variable "tags" {
