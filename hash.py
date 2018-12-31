@@ -120,22 +120,24 @@ if len(sys.argv) > 1 and sys.argv[1] == '--test':
     query = {
         'runtime': 'python3.6',
         'source_path': os.path.join(current_dir, 'tests', 'python3-pip', 'lambda'),
+        'build_script': os.path.join(current_dir, 'build.py'),
     }
 else:
     query = json.load(sys.stdin)
 runtime = query['runtime']
 source_path = query['source_path']
+build_script = query['build_script']
 
 # Validate the query.
 if not source_path:
     abort('source_path must be set.')
 
 # Generate a hash based on file names and content. Also use the
-# runtime value and content of build.py because they can have an
+# runtime value and content of the build script because they can have an
 # effect on the resulting archive.
 content_hash = generate_content_hash(source_path)
 content_hash.update(runtime.encode())
-with open(os.path.join(current_dir, 'build.py'), 'rb') as build_script_file:
+with open(build_script, 'rb') as build_script_file:
     content_hash.update(build_script_file.read())
 
 # Generate a unique filename based on the hash.
@@ -146,7 +148,7 @@ filename = '.terraform/{prefix}{content_hash}.zip'.format(
 
 # Determine the command to run if Terraform wants to build a new archive.
 build_command = "{build_script} {build_data}".format(
-    build_script=os.path.join(current_dir, 'build.py'),
+    build_script=build_script,
     build_data=bytes.decode(base64.b64encode(str.encode(
         json.dumps({
             'filename': filename,

@@ -4,8 +4,9 @@ data "external" "archive" {
   program = ["${path.module}/hash.py"]
 
   query = {
-    runtime     = "${var.runtime}"
-    source_path = "${var.source_path}"
+    runtime      = "${var.runtime}"
+    source_path  = "${var.source_path}"
+    build_script = "${coalesce(var.build_script, "${path.module}/build.py")}"
   }
 }
 
