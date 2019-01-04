@@ -16,6 +16,6 @@ module "lambda" {
   handler       = "main.lambda_handler"
   runtime       = "python3.7"
 
-  source_path  = "${path.module}/lambda"
+  source_path  = "${path.module}/lambda/src"
   build_script = "${path.module}/lambda/build.sh"
 }
