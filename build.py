@@ -1,8 +1,5 @@
-#!/usr/bin/env python3
-#
 # Builds a zip file from the source_dir or source_file.
 # Installs dependencies with pip automatically.
-#
 
 import base64
 import json
@@ -101,11 +98,12 @@ def create_zip_file(source_dir, target_file):
     target_dir = os.path.dirname(target_file)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    base, ext = os.path.splitext(target_file)
+    target_base, _ = os.path.splitext(target_file)
     shutil.make_archive(
-        base if ext == '.zip' else target_file,
+        target_base,
         format='zip',
-        root_dir=source_dir)
+        root_dir=source_dir,
+    )
 
 json_payload = bytes.decode(base64.b64decode(sys.argv[1]))
 query = json.loads(json_payload)

@@ -13,7 +13,7 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 
 ## Requirements
 
-* Python
+* Python 2.7 or higher
 * Linux/Unix/Windows
 
 ## Usage

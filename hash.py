@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-#
 # Generates a content hash of the source_path, which is used to determine if
 # the Lambda code has changed, ignoring file modification and access times.
 #
 # Outputs a filename and a command to run if the archive needs to be built.
-#
 
 import base64
 import datetime
@@ -145,7 +142,7 @@ filename = '.terraform/{prefix}{content_hash}.zip'.format(
 )
 
 # Determine the command to run if Terraform wants to build a new archive.
-build_command = "{build_script} {build_data}".format(
+build_command = "python {build_script} {build_data}".format(
     build_script=os.path.join(current_dir, 'build.py'),
     build_data=bytes.decode(base64.b64encode(str.encode(
         json.dumps({
