@@ -26,7 +26,7 @@ set -e
 
 # Extract variables from the JSON-formatted, Base64 encoded input argument.
 # This is to conform to arguments as passed in by hash.py
-eval "$(echo $1 | base64 -D | jq -r '@sh "FILENAME=\(.filename) RUNTIME=\(.runtime) SOURCE_PATH=\(.source_path)"')"
+eval "$(echo $1 | base64 --decode | jq -r '@sh "FILENAME=\(.filename) RUNTIME=\(.runtime) SOURCE_PATH=\(.source_path)"')"
 
 # Apply default values for missing arguments
 FILENAME="${FILENAME:-out.zip}"
