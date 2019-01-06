@@ -13,10 +13,6 @@
 # - jq
 #
 # Usage:
-# 
-# $ ./build.sh
-#
-# - Defaults are to build the current path to out.zip
 #
 # $ ./build.sh "$(echo { \"filename\": \"out.zip\", \"runtime\": \"python3.7\", \"source_path\": \".\" \} | jq . | base64)"
 #
