@@ -2,8 +2,8 @@
 # 
 # Compiles a Python package into a zip deployable on AWS Lambda.
 #
-# - Builds Python dependencies into the package, using Docker
-#   using a Docker image to correctly build native extensions
+# - Builds Python dependencies into the package, using a Docker image to
+#   correctly build native extensions
 # - Able to be used with the terraform-aws-lambda module
 #
 # Dependencies:
