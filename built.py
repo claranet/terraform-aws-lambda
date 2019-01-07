@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+# Builds missing zip files included in the
+# Terraform state but missing from the disk.
 
 import json
 import os
