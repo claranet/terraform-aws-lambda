@@ -145,7 +145,13 @@ with tempdir() as temp_dir:
                     pip_command = 'pip3'
                 else:
                     pip_command = 'pip2'
-                run(pip_command, 'install', '-r', 'requirements.txt', '-t', '.')
+                run(
+                    pip_command,
+                    'install',
+                    '--prefix=',
+                    '--target=.',
+                    '--requirement=requirements.txt',
+                )
 
     # Zip up the temporary directory and write it to the target filename.
     # This will be used by the Lambda function as the source code package.
