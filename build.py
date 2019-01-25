@@ -1,8 +1,6 @@
 # Builds a zip file from the source_dir or source_file.
 # Installs dependencies with pip automatically.
 
-import base64
-import json
 import os
 import shutil
 import subprocess
@@ -105,11 +103,10 @@ def create_zip_file(source_dir, target_file):
         root_dir=source_dir,
     )
 
-json_payload = bytes.decode(base64.b64decode(sys.argv[1]))
-query = json.loads(json_payload)
-filename = query['filename']
-runtime = query['runtime']
-source_path = query['source_path']
+
+filename = sys.argv[1]
+runtime = sys.argv[2]
+source_path = sys.argv[3]
 
 absolute_filename = os.path.abspath(filename)
 

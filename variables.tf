@@ -36,10 +36,16 @@ variable "source_path" {
   type        = "string"
 }
 
-variable "build_script" {
-  description = "The path to a custom build script for creating the Lambda package zip file (defaults to the included build.py)"
+variable "build_command" {
+  description = "The command that creates the Lambda package zip file"
   type        = "string"
-  default     = ""
+  default     = "python build.py '$filename' '$runtime' '$source'"
+}
+
+variable "build_paths" {
+  description = "The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change"
+  type        = "list"
+  default     = ["build.py"]
 }
 
 variable "description" {
