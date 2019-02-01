@@ -71,6 +71,8 @@ function name unique per region, for example by setting
 | attach\_dead\_letter\_config | Set this to true if using the dead_letter_config variable | string | `"false"` | no |
 | attach\_policy | Set this to true if using the policy variable | string | `"false"` | no |
 | attach\_vpc\_config | Set this to true if using the vpc_config variable | string | `"false"` | no |
+| build\_command | The command that creates the Lambda package zip file | string | `"python build.py '$filename' '$runtime' '$source'"` | no |
+| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | list | `<list>` | no |
 | dead\_letter\_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `"Managed by Terraform"` | no |
 | enable\_cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | string | `"true"` | no |
