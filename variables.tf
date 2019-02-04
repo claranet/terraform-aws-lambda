@@ -84,6 +84,18 @@ variable "attach_vpc_config" {
   default     = false
 }
 
+variable "cloudwatch_rule_config" {
+  description = "Cloudwatch Rule for the Lambda function"
+  type        = "map"
+  default     = {}
+}
+
+variable "attach_cloudwatch_rule_config" {
+  description = "Set this to true if using the cloudwatch_rule_config variable"
+  type        = "string"
+  default     = false
+}
+
 variable "tags" {
   description = "A mapping of tags"
   type        = "map"
