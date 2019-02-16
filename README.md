@@ -81,6 +81,7 @@ function name unique per region, for example by setting
 | handler | The function entrypoint in your code | string | n/a | yes |
 | memory\_size | Amount of memory in MB your Lambda function can use at runtime | string | `"128"` | no |
 | policy | An addional policy to attach to the Lambda function | string | `""` | no |
+| publish | Whether to publish creation/change as new Lambda Function Version | string | `"false"` | no |
 | reserved\_concurrent\_executions | The amount of reserved concurrent executions for this Lambda function | string | `"0"` | no |
 | runtime | The runtime environment for the Lambda function | string | n/a | yes |
 | source\_path | The source file or directory containing your Lambda source code | string | n/a | yes |
@@ -94,5 +95,6 @@ function name unique per region, for example by setting
 |------|-------------|
 | function\_arn | The ARN of the Lambda function |
 | function\_name | The name of the Lambda function |
+| function\_qualified\_arn | The qualified ARN of the Lambda function |
 | role\_arn | The ARN of the IAM role created for the Lambda function |
 | role\_name | The name of the IAM role created for the Lambda function |

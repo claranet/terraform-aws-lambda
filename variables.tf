@@ -107,3 +107,9 @@ variable "enable_cloudwatch_logs" {
   type        = "string"
   default     = true
 }
+
+variable "publish" {
+  description = "Whether to publish creation/change as new Lambda Function Version"
+  type        = "string"
+  default     = false
+}
