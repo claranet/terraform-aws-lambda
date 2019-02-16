@@ -13,8 +13,8 @@ resource "aws_lambda_function" "lambda" {
   memory_size                    = "${var.memory_size}"
   reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
   runtime                        = "${var.runtime}"
-  timeout                        = "${var.timeout}"
-  publish                        = "${var.publish}"
+  timeout                        = "${local.timeout}"
+  publish                        = "${local.publish}"
   tags                           = "${var.tags}"
 
   # Use a generated filename to determine when the source code has changed.
@@ -57,8 +57,8 @@ resource "aws_lambda_function" "lambda_with_dl" {
   memory_size                    = "${var.memory_size}"
   reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
   runtime                        = "${var.runtime}"
-  timeout                        = "${var.timeout}"
-  publish                        = "${var.publish}"
+  timeout                        = "${local.timeout}"
+  publish                        = "${local.publish}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
   depends_on                     = ["null_resource.archive"]
@@ -85,8 +85,8 @@ resource "aws_lambda_function" "lambda_with_vpc" {
   memory_size                    = "${var.memory_size}"
   reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
   runtime                        = "${var.runtime}"
-  timeout                        = "${var.timeout}"
-  publish                        = "${var.publish}"
+  timeout                        = "${local.timeout}"
+  publish                        = "${local.publish}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
   depends_on                     = ["null_resource.archive"]
@@ -117,8 +117,8 @@ resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
   memory_size                    = "${var.memory_size}"
   reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
   runtime                        = "${var.runtime}"
-  timeout                        = "${var.timeout}"
-  publish                        = "${var.publish}"
+  timeout                        = "${local.timeout}"
+  publish                        = "${local.publish}"
   tags                           = "${var.tags}"
   filename                       = "${lookup(data.external.built.result, "filename")}"
   depends_on                     = ["null_resource.archive"]

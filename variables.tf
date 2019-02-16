@@ -113,3 +113,14 @@ variable "publish" {
   type        = "string"
   default     = false
 }
+
+variable "lambda_at_edge" {
+  description = "Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function"
+  type        = "string"
+  default     = false
+}
+
+locals {
+  publish = "${var.lambda_at_edge ? true : var.publish}"
+  timeout = "${var.lambda_at_edge ? min(var.timeout, 5) : var.timeout}"
+}
