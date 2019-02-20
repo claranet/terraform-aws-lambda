@@ -95,22 +95,6 @@ variable "policy_arns" {
   type        = "list"
   default     = []
 }
-variable "policy_arn_count" {
-  description = "The number of policies to expect in the policy_arns list. Note: required due to known Terraform issues: https://github.com/hashicorp/terraform/issues/17421"
-}
-
-
-variable "policy" {
-  description = "An addional policy to attach to the Lambda function"
-  type        = "string"
-  default     = ""
-}
-
-variable "attach_policy" {
-  description = "Set this to true if using the policy variable"
-  type        = "string"
-  default     = false
-}
 
 variable "enable_cloudwatch_logs" {
   description = "Set this to false to disable logging your Lambda output to CloudWatch Logs"
@@ -133,4 +117,5 @@ variable "lambda_at_edge" {
 locals {
   publish = "${var.lambda_at_edge ? true : var.publish}"
   timeout = "${var.lambda_at_edge ? min(var.timeout, 5) : var.timeout}"
+  policy_arn_count = "${length(var.policy_arns)}"
 }
