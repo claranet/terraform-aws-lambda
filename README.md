@@ -13,8 +13,8 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 
 ## Requirements
 
-* Python
-* Linux/Unix
+* Python 2.7 or higher
+* Linux/Unix/Windows
 
 ## Usage
 
@@ -70,30 +70,34 @@ function name unique per region, for example by setting
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| attach_dead_letter_config | Set this to true if using the dead_letter_config variable | string | `false` | no |
-| attach_policy | Set this to true if using the policy variable | string | `false` | no |
-| attach_policy_arn | Set this to true if using the policy_arn variable | string | `false` | no |
-| attach_vpc_config | Set this to true if using the vpc_config variable | string | `false` | no |
-| dead_letter_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
-| description | Description of what your Lambda function does | string | `Managed by Terraform` | no |
+| attach\_dead\_letter\_config | Set this to true if using the dead_letter_config variable | string | `"false"` | no |
+| attach\_policy | Set this to true if using the policy variable | string | `"false"` | no |
+| attach\_vpc\_config | Set this to true if using the vpc_config variable | string | `"false"` | no |
+| build\_command | The command that creates the Lambda package zip file | string | `"python build.py '$filename' '$runtime' '$source'"` | no |
+| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | list | `<list>` | no |
+| dead\_letter\_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
+| description | Description of what your Lambda function does | string | `"Managed by Terraform"` | no |
+| enable\_cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | string | `"true"` | no |
 | environment | Environment configuration for the Lambda function | map | `<map>` | no |
-| function_name | A unique name for your Lambda function (and related IAM resources) | string | - | yes |
-| handler | The function entrypoint in your code | string | - | yes |
-| memory_size | Amount of memory in MB your Lambda function can use at runtime | string | `128` | no |
-| policy | An addional policy to attach to the Lambda function | string | `` | no |
-| policy_arn | An addional policy (ARN) to attach to the Lambda function | string | `` | no |
-| reserved_concurrent_executions | The amount of reserved concurrent executions for this Lambda function | string | `0` | no |
-| runtime | The runtime environment for the Lambda function | string | - | yes |
-| source_path | The source file or directory containing your Lambda source code | string | - | yes |
+| function\_name | A unique name for your Lambda function (and related IAM resources) | string | n/a | yes |
+| handler | The function entrypoint in your code | string | n/a | yes |
+| lambda\_at\_edge | Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function | string | `"false"` | no |
+| memory\_size | Amount of memory in MB your Lambda function can use at runtime | string | `"128"` | no |
+| policy | An addional policy to attach to the Lambda function | string | `""` | no |
+| publish | Whether to publish creation/change as new Lambda Function Version | string | `"false"` | no |
+| reserved\_concurrent\_executions | The amount of reserved concurrent executions for this Lambda function | string | `"0"` | no |
+| runtime | The runtime environment for the Lambda function | string | n/a | yes |
+| source\_path | The source file or directory containing your Lambda source code | string | n/a | yes |
 | tags | A mapping of tags | map | `<map>` | no |
-| timeout | The amount of time your Lambda function had to run in seconds | string | `10` | no |
-| vpc_config | VPC configuration for the Lambda function | map | `<map>` | no |
+| timeout | The amount of time your Lambda function had to run in seconds | string | `"10"` | no |
+| vpc\_config | VPC configuration for the Lambda function | map | `<map>` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| function_arn | The ARN of the Lambda function |
-| function_name | The name of the Lambda function |
-| role_arn | The ARN of the IAM role created for the Lambda function |
-| role_name | The name of the IAM role created for the Lambda function |
+| function\_arn | The ARN of the Lambda function |
+| function\_name | The name of the Lambda function |
+| function\_qualified\_arn | The qualified ARN of the Lambda function |
+| role\_arn | The ARN of the IAM role created for the Lambda function |
+| role\_name | The name of the IAM role created for the Lambda function |

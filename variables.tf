@@ -36,6 +36,18 @@ variable "source_path" {
   type        = "string"
 }
 
+variable "build_command" {
+  description = "The command that creates the Lambda package zip file"
+  type        = "string"
+  default     = "python build.py '$filename' '$runtime' '$source'"
+}
+
+variable "build_paths" {
+  description = "The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change"
+  type        = "list"
+  default     = ["build.py"]
+}
+
 variable "description" {
   description = "Description of what your Lambda function does"
   type        = "string"
@@ -98,4 +110,27 @@ variable "attach_policy" {
   description = "Set this to true if using the policy variable"
   type        = "string"
   default     = false
+}
+
+variable "enable_cloudwatch_logs" {
+  description = "Set this to false to disable logging your Lambda output to CloudWatch Logs"
+  type        = "string"
+  default     = true
+}
+
+variable "publish" {
+  description = "Whether to publish creation/change as new Lambda Function Version"
+  type        = "string"
+  default     = false
+}
+
+variable "lambda_at_edge" {
+  description = "Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function"
+  type        = "string"
+  default     = false
+}
+
+locals {
+  publish = "${var.lambda_at_edge ? true : var.publish}"
+  timeout = "${var.lambda_at_edge ? min(var.timeout, 5) : var.timeout}"
 }

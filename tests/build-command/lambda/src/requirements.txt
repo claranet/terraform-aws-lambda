@@ -1,0 +1,3 @@
+# numpy has native extensions, needs a custom build script to 
+# install correctly if your host OS differs to Lambda OS
+numpy

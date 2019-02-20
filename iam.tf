@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
+      identifiers = ["${slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1)}"]
     }
   }
 }
@@ -19,7 +19,15 @@ resource "aws_iam_role" "lambda" {
 
 # Attach a policy for logs.
 
+locals {
+  lambda_log_group_arn      = "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.function_name}"
+  lambda_edge_log_group_arn = "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/us-east-1.${var.function_name}"
+  log_group_arns            = ["${slice(list(local.lambda_log_group_arn, local.lambda_edge_log_group_arn), 0, var.lambda_at_edge ? 2 : 1)}"]
+}
+
 data "aws_iam_policy_document" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   statement {
     effect = "Allow"
 
@@ -28,7 +36,7 @@ data "aws_iam_policy_document" "logs" {
     ]
 
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      "*",
     ]
   }
 
@@ -40,18 +48,20 @@ data "aws_iam_policy_document" "logs" {
       "logs:PutLogEvents",
     ]
 
-    resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.function_name}:*",
-    ]
+    resources = ["${concat(formatlist("%v:*", local.log_group_arns), formatlist("%v:*:*", local.log_group_arns))}"]
   }
 }
 
 resource "aws_iam_policy" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   name   = "${var.function_name}-logs"
   policy = "${data.aws_iam_policy_document.logs.json}"
 }
 
 resource "aws_iam_policy_attachment" "logs" {
+  count = "${var.enable_cloudwatch_logs ? 1 : 0}"
+
   name       = "${var.function_name}-logs"
   roles      = ["${aws_iam_role.lambda.name}"]
   policy_arn = "${aws_iam_policy.logs.arn}"

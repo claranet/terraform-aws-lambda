@@ -1,11 +1,6 @@
-#!/usr/bin/env python3
-#
 # Builds a zip file from the source_dir or source_file.
 # Installs dependencies with pip automatically.
-#
 
-import base64
-import json
 import os
 import shutil
 import subprocess
@@ -15,15 +10,20 @@ import tempfile
 from contextlib import contextmanager
 
 
+@contextmanager
 def cd(path):
     """
     Changes the working directory.
 
     """
 
-    if os.getcwd() != path:
-        print('cd', path)
+    cwd = os.getcwd()
+    print('cd', path)
+    try:
         os.chdir(path)
+        yield
+    finally:
+        os.chdir(cwd)
 
 
 def format_command(command):
@@ -96,14 +96,17 @@ def create_zip_file(source_dir, target_file):
     target_dir = os.path.dirname(target_file)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    cd(source_dir)
-    run('zip', '-r', target_file, '.')
+    target_base, _ = os.path.splitext(target_file)
+    shutil.make_archive(
+        target_base,
+        format='zip',
+        root_dir=source_dir,
+    )
 
-json_payload = bytes.decode(base64.b64decode(sys.argv[1]))
-query = json.loads(json_payload)
-filename = query['filename']
-runtime = query['runtime']
-source_path = query['source_path']
+
+filename = sys.argv[1]
+runtime = sys.argv[2]
+source_path = sys.argv[3]
 
 absolute_filename = os.path.abspath(filename)
 
@@ -120,26 +123,32 @@ with tempdir() as temp_dir:
         source_files = [os.path.basename(source_path)]
 
     # Copy them into the temporary directory.
-    cd(source_dir)
-    for file_name in source_files:
-        target_path = os.path.join(temp_dir, file_name)
-        target_dir = os.path.dirname(target_path)
-        if not os.path.exists(target_dir):
-            print('mkdir -p {}'.format(target_dir))
-            os.makedirs(target_dir)
-        print('cp {} {}'.format(file_name, target_path))
-        shutil.copyfile(file_name, target_path)
+    with cd(source_dir):
+        for file_name in source_files:
+            target_path = os.path.join(temp_dir, file_name)
+            target_dir = os.path.dirname(target_path)
+            if not os.path.exists(target_dir):
+                print('mkdir -p {}'.format(target_dir))
+                os.makedirs(target_dir)
+            print('cp {} {}'.format(file_name, target_path))
+            shutil.copyfile(file_name, target_path)
 
     # Install dependencies into the temporary directory.
     if runtime.startswith('python'):
         requirements = os.path.join(temp_dir, 'requirements.txt')
         if os.path.exists(requirements):
-            cd(temp_dir)
-            if runtime.startswith('python3'):
-                pip_command = 'pip3'
-            else:
-                pip_command = 'pip2'
-            run(pip_command, 'install', '-r', 'requirements.txt', '-t', '.')
+            with cd(temp_dir):
+                if runtime.startswith('python3'):
+                    pip_command = 'pip3'
+                else:
+                    pip_command = 'pip2'
+                run(
+                    pip_command,
+                    'install',
+                    '--prefix=',
+                    '--target=.',
+                    '--requirement=requirements.txt',
+                )
 
     # Zip up the temporary directory and write it to the target filename.
     # This will be used by the Lambda function as the source code package.
