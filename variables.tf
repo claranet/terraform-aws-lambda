@@ -17,7 +17,7 @@ variable "memory_size" {
 variable "reserved_concurrent_executions" {
   description = "The amount of reserved concurrent executions for this Lambda function"
   type        = "string"
-  default     = 0
+  default     = -1
 }
 
 variable "runtime" {
