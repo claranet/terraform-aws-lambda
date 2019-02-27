@@ -83,7 +83,7 @@ function name unique per region, for example by setting
 | memory\_size | Amount of memory in MB your Lambda function can use at runtime | string | `"128"` | no |
 | policy | An addional policy to attach to the Lambda function | string | `""` | no |
 | publish | Whether to publish creation/change as new Lambda Function Version | string | `"false"` | no |
-| reserved\_concurrent\_executions | The amount of reserved concurrent executions for this Lambda function | string | `"0"` | no |
+| reserved\_concurrent\_executions | The amount of reserved concurrent executions for this Lambda function | string | `"-1"` | no |
 | runtime | The runtime environment for the Lambda function | string | n/a | yes |
 | source\_path | The source file or directory containing your Lambda source code | string | n/a | yes |
 | tags | A mapping of tags | map | `<map>` | no |
