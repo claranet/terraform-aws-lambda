@@ -62,6 +62,7 @@ module "lambda" {
     enabled             = true // set this to false if you want to have the trigger declared but disabled
     description         = "Run my lambda every day at 8pm"
     schedule_expression = "cron(0 20 * * ? *)"
+    input               = "{\"key\": \"value\"}"
   }
 }
 ```

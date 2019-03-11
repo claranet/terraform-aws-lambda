@@ -31,6 +31,7 @@ module "lambda" {
     # enabled = false
     description = "Test scheduled lambda run"
     schedule_expression = "cron(0 20 * * ? *)"
+    input = "{\"key\": \"value\"}"
   }
 }
 
