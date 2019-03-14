@@ -132,6 +132,7 @@ with tempdir() as temp_dir:
                 os.makedirs(target_dir)
             print('cp {} {}'.format(file_name, target_path))
             shutil.copyfile(file_name, target_path)
+            shutil.copymode(file_name, target_path)
 
     # Install dependencies into the temporary directory.
     if runtime.startswith('python'):
