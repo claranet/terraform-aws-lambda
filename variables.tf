@@ -90,16 +90,10 @@ variable "tags" {
   default     = {}
 }
 
-variable "policy" {
-  description = "An addional policy to attach to the Lambda function"
-  type        = "string"
-  default     = ""
-}
-
-variable "attach_policy" {
-  description = "Set this to true if using the policy variable"
-  type        = "string"
-  default     = false
+variable "policy_arns" {
+  description = "Addional policies (ARNs) to attach to the Lambda function."
+  type        = "list"
+  default     = []
 }
 
 variable "enable_cloudwatch_logs" {
@@ -123,4 +117,5 @@ variable "lambda_at_edge" {
 locals {
   publish = "${var.lambda_at_edge ? true : var.publish}"
   timeout = "${var.lambda_at_edge ? min(var.timeout, 5) : var.timeout}"
+  policy_arn_count = "${length(var.policy_arns)}"
 }

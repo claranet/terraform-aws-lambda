@@ -34,6 +34,8 @@ module "lambda" {
   // Attach a policy.
   attach_policy = true
   policy        = "${data.aws_iam_policy_document.lambda.json}"
+  attach_policy_arn = true
+  policy_arn    = "${data.aws_iam_policy.lambda.arn}"
 
   // Add a dead letter queue.
   attach_dead_letter_config = true
