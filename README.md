@@ -95,6 +95,7 @@ function name unique per region, for example by setting
 | Name | Description |
 |------|-------------|
 | function\_arn | The ARN of the Lambda function |
+| function\_invoke\_arn | The Invoke ARN of the Lambda function |
 | function\_name | The name of the Lambda function |
 | function\_qualified\_arn | The qualified ARN of the Lambda function |
 | role\_arn | The ARN of the IAM role created for the Lambda function |
