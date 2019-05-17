@@ -25,6 +25,12 @@ variable "runtime" {
   type        = "string"
 }
 
+variable "layers" {
+  description = "List of Lambda Layer Version ARNs to attach to your Lambda Function."
+  type        = "list"
+  default     = []
+}
+
 variable "timeout" {
   description = "The amount of time your Lambda function had to run in seconds"
   type        = "string"
