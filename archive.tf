@@ -10,15 +10,15 @@ data "external" "archive" {
   query = {
     build_command  = "${var.build_command}"
     build_paths    = "${jsonencode(var.build_paths)}"
-    module_relpath = "${local.module_relpath}"
+    module_relpath = "${path.module}"
     runtime        = "${var.runtime}"
-    source_path    = "${var.source_path}"
+    source_path    = "${path.cwd}/${var.source_path}"
   }
 }
 
 # Build the zip archive whenever the filename changes.
 resource "null_resource" "archive" {
-  triggers {
+  triggers = {
     filename = "${lookup(data.external.archive.result, "filename")}"
   }
 

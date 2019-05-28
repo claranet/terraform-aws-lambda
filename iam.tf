@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["${slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1)}"]
+      identifiers = slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1)
     }
   }
 }
@@ -23,7 +23,7 @@ resource "aws_iam_role" "lambda" {
 locals {
   lambda_log_group_arn      = "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.function_name}"
   lambda_edge_log_group_arn = "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/us-east-1.${var.function_name}"
-  log_group_arns            = ["${slice(list(local.lambda_log_group_arn, local.lambda_edge_log_group_arn), 0, var.lambda_at_edge ? 2 : 1)}"]
+  log_group_arns            = slice(list(local.lambda_log_group_arn, local.lambda_edge_log_group_arn), 0, var.lambda_at_edge ? 2 : 1)
 }
 
 data "aws_iam_policy_document" "logs" {
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "logs" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["${concat(formatlist("%v:*", local.log_group_arns), formatlist("%v:*:*", local.log_group_arns))}"]
+    resources = concat(formatlist("%v:*", local.log_group_arns), formatlist("%v:*:*", local.log_group_arns))
   }
 }
 
@@ -57,7 +57,7 @@ resource "aws_iam_policy" "logs" {
   count = "${var.enable_cloudwatch_logs ? 1 : 0}"
 
   name   = "${var.function_name}-logs"
-  policy = "${data.aws_iam_policy_document.logs.json}"
+  policy = "${data.aws_iam_policy_document.logs[0].json}"
 }
 
 resource "aws_iam_policy_attachment" "logs" {
@@ -65,7 +65,7 @@ resource "aws_iam_policy_attachment" "logs" {
 
   name       = "${var.function_name}-logs"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.logs.arn}"
+  policy_arn = "${aws_iam_policy.logs[0].arn}"
 }
 
 # Attach an additional policy required for the dead letter config.
@@ -91,7 +91,7 @@ resource "aws_iam_policy" "dead_letter" {
   count = "${var.attach_dead_letter_config ? 1 : 0}"
 
   name   = "${var.function_name}-dl"
-  policy = "${data.aws_iam_policy_document.dead_letter.json}"
+  policy = "${data.aws_iam_policy_document.dead_letter[0].json}"
 }
 
 resource "aws_iam_policy_attachment" "dead_letter" {
@@ -99,7 +99,7 @@ resource "aws_iam_policy_attachment" "dead_letter" {
 
   name       = "${var.function_name}-dl"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.dead_letter.arn}"
+  policy_arn = "${aws_iam_policy.dead_letter[0].arn}"
 }
 
 # Attach an additional policy required for the VPC config
@@ -132,7 +132,7 @@ resource "aws_iam_policy_attachment" "network" {
 
   name       = "${var.function_name}-network"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.network.arn}"
+  policy_arn = "${aws_iam_policy.network.0.arn}"
 }
 
 # Attach an additional policy if provided.
@@ -149,5 +149,5 @@ resource "aws_iam_policy_attachment" "additional" {
 
   name       = "${var.function_name}"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.additional.arn}"
+  policy_arn = "${aws_iam_policy.additional[0].arn}"
 }
