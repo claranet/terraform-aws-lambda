@@ -40,6 +40,6 @@ data "external" "built" {
     build_command  = "${lookup(data.external.archive.result, "build_command")}"
     filename_old   = "${lookup(null_resource.archive.triggers, "filename")}"
     filename_new   = "${lookup(data.external.archive.result, "filename")}"
-    module_relpath = "${local.module_relpath}"
+    module_relpath = "${path.module}"
   }
 }
