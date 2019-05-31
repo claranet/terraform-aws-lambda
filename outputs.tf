@@ -1,6 +1,6 @@
 output "function_arn" {
   description = "The ARN of the Lambda function"
-  value       = "${element(concat(aws_lambda_function.lambda.*.arn, aws_lambda_function.lambda_with_dl.*.arn, aws_lambda_function.lambda_with_vpc.*.arn, aws_lambda_function.lambda_with_dl_and_vpc.*.arn), 0)}"
+  value       = "${element(concat(aws_lambda_function.lambda.*.arn, aws_lambda_function.lambda_s3.*.arn, aws_lambda_function.lambda_with_dl.*.arn, aws_lambda_function.lambda_with_vpc.*.arn, aws_lambda_function.lambda_with_dl_and_vpc.*.arn), 0)}"
 }
 
 output "function_invoke_arn" {
@@ -10,7 +10,7 @@ output "function_invoke_arn" {
 
 output "function_name" {
   description = "The name of the Lambda function"
-  value       = "${element(concat(aws_lambda_function.lambda.*.function_name, aws_lambda_function.lambda_with_dl.*.function_name, aws_lambda_function.lambda_with_vpc.*.function_name, aws_lambda_function.lambda_with_dl_and_vpc.*.function_name), 0)}"
+  value       = "${element(concat(aws_lambda_function.lambda.*.function_name, aws_lambda_function.lambda_s3.*.arn, aws_lambda_function.lambda_with_dl.*.function_name, aws_lambda_function.lambda_with_vpc.*.function_name, aws_lambda_function.lambda_with_dl_and_vpc.*.function_name), 0)}"
 }
 
 output "function_qualified_arn" {
