@@ -1,5 +1,7 @@
 locals {
-  module_relpath = "${substr(path.module, length(path.cwd) + 1, -1)}"
+  module_relpath_11 = "${substr(path.module, length(path.cwd) + 1, -1)}"
+  module_relpath_12 = "${path.module}"
+  module_relpath    = "${path.cwd == substr(path.module, 0, length(path.cwd)) ? local.module_relpath_11 : local.module_relpath_12}"
 }
 
 # Generates a filename for the zip archive based on the contents of the files
