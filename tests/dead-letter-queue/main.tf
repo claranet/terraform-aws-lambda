@@ -30,7 +30,7 @@ module "lambda" {
 
   attach_dead_letter_config = true
 
-  dead_letter_config {
+  dead_letter_config = {
     target_arn = "${aws_sqs_queue.dlq.arn}"
   }
 }

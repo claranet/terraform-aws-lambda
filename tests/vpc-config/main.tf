@@ -11,7 +11,7 @@ provider "aws" {
 resource "aws_vpc" "test" {
   cidr_block = "10.255.255.0/24"
 
-  tags {
+  tags = {
     Name = "terraform-aws-lambda-test-vpc-config"
   }
 }
@@ -39,7 +39,7 @@ module "lambda" {
 
   attach_vpc_config = true
 
-  vpc_config {
+  vpc_config = {
     subnet_ids         = ["${aws_subnet.test.id}"]
     security_group_ids = ["${aws_security_group.test.id}"]
   }

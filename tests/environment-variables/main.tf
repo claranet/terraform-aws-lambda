@@ -25,8 +25,8 @@ module "lambda" {
 
   source_path = "${path.module}/lambda.py"
 
-  environment {
-    variables {
+  environment = {
+    variables = {
       ARN = "${aws_iam_user.test.arn}"
     }
   }
