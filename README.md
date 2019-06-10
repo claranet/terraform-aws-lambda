@@ -54,6 +54,16 @@ module "lambda" {
     subnet_ids         = ["${aws_subnet.test.id}"]
     security_group_ids = ["${aws_security_group.test.id}"]
   }
+
+  // Trigger from a Cloudwatch Events rule.
+  attach_cloudwatch_rule_config = true
+  cloudwatch_rule_config {
+    name                = "scheduled-run"
+    enabled             = true // set this to false if you want to have the trigger declared but disabled
+    description         = "Run my lambda every day at 8pm"
+    schedule_expression = "cron(0 20 * * ? *)"
+    input               = "{\"key\": \"value\"}"
+  }
 }
 ```
 
@@ -68,11 +78,13 @@ function name unique per region, for example by setting
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| attach\_cloudwatch\_rule\_config | Set this to true if using the cloudwatch_rule_config variable | string | `false` | no |
 | attach\_dead\_letter\_config | Set this to true if using the dead_letter_config variable | string | `"false"` | no |
 | attach\_policy | Set this to true if using the policy variable | string | `"false"` | no |
 | attach\_vpc\_config | Set this to true if using the vpc_config variable | string | `"false"` | no |
 | build\_command | The command that creates the Lambda package zip file | string | `"python build.py '$filename' '$runtime' '$source'"` | no |
 | build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | list | `<list>` | no |
+| cloudwatch\_rule\_config | Cloudwatch Rule for the Lambda function | map | `<map>` | no |
 | dead\_letter\_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
 | description | Description of what your Lambda function does | string | `"Managed by Terraform"` | no |
 | enable\_cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | string | `"true"` | no |
@@ -95,6 +107,7 @@ function name unique per region, for example by setting
 
 | Name | Description |
 |------|-------------|
+| cloudwatch\_rule\_arn | The ARN of the Cloudwatch rule |
 | function\_arn | The ARN of the Lambda function |
 | function\_invoke\_arn | The Invoke ARN of the Lambda function |
 | function\_name | The name of the Lambda function |
