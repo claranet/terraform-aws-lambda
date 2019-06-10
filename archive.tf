@@ -1,9 +1,3 @@
-locals {
-  module_relpath_11 = "${substr(path.module, length(path.cwd) + 1, -1)}"
-  module_relpath_12 = "${path.module}"
-  module_relpath    = "${path.cwd == substr(path.module, 0, length(path.cwd)) ? local.module_relpath_11 : local.module_relpath_12}"
-}
-
 # Generates a filename for the zip archive based on the contents of the files
 # in source_path. The filename will change when the source code changes.
 data "external" "archive" {
@@ -12,7 +6,7 @@ data "external" "archive" {
   query = {
     build_command  = "${var.build_command}"
     build_paths    = "${jsonencode(var.build_paths)}"
-    module_relpath = "${local.module_relpath}"
+    module_relpath = "${path.module}"
     runtime        = "${var.runtime}"
     source_path    = "${var.source_path}"
   }
@@ -42,6 +36,6 @@ data "external" "built" {
     build_command  = "${lookup(data.external.archive.result, "build_command")}"
     filename_old   = "${lookup(null_resource.archive.triggers, "filename")}"
     filename_new   = "${lookup(data.external.archive.result, "filename")}"
-    module_relpath = "${local.module_relpath}"
+    module_relpath = "${path.module}"
   }
 }
