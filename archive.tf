@@ -20,7 +20,7 @@ data "external" "archive" {
 
 # Build the zip archive whenever the filename changes.
 resource "null_resource" "archive" {
-  triggers {
+  triggers = {
     filename = "${lookup(data.external.archive.result, "filename")}"
   }
 

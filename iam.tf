@@ -57,7 +57,7 @@ resource "aws_iam_policy" "logs" {
   count = "${var.enable_cloudwatch_logs ? 1 : 0}"
 
   name   = "${var.function_name}-logs"
-  policy = "${data.aws_iam_policy_document.logs.json}"
+  policy = "${join("", data.aws_iam_policy_document.logs.*.json)}"
 }
 
 resource "aws_iam_policy_attachment" "logs" {
@@ -65,7 +65,7 @@ resource "aws_iam_policy_attachment" "logs" {
 
   name       = "${var.function_name}-logs"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.logs.arn}"
+  policy_arn = "${join("", aws_iam_policy.logs.*.arn)}"
 }
 
 # Attach an additional policy required for the dead letter config.
@@ -91,7 +91,7 @@ resource "aws_iam_policy" "dead_letter" {
   count = "${var.attach_dead_letter_config ? 1 : 0}"
 
   name   = "${var.function_name}-dl"
-  policy = "${data.aws_iam_policy_document.dead_letter.json}"
+  policy = "${join("", data.aws_iam_policy_document.dead_letter.*.json)}"
 }
 
 resource "aws_iam_policy_attachment" "dead_letter" {
@@ -99,7 +99,7 @@ resource "aws_iam_policy_attachment" "dead_letter" {
 
   name       = "${var.function_name}-dl"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.dead_letter.arn}"
+  policy_arn = "${join("", aws_iam_policy.dead_letter.*.arn)}"
 }
 
 # Attach an additional policy required for the VPC config
@@ -132,7 +132,7 @@ resource "aws_iam_policy_attachment" "network" {
 
   name       = "${var.function_name}-network"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.network.arn}"
+  policy_arn = "${join("", aws_iam_policy.network.*.arn)}"
 }
 
 # Attach an additional policy if provided.
@@ -149,5 +149,5 @@ resource "aws_iam_policy_attachment" "additional" {
 
   name       = "${var.function_name}"
   roles      = ["${aws_iam_role.lambda.name}"]
-  policy_arn = "${aws_iam_policy.additional.arn}"
+  policy_arn = "${join("", aws_iam_policy.additional.*.arn)}"
 }
