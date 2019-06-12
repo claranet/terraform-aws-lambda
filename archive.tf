@@ -4,23 +4,23 @@ data "external" "archive" {
   program = ["python", "${path.module}/hash.py"]
 
   query = {
-    build_command  = "${var.build_command}"
-    build_paths    = "${jsonencode(var.build_paths)}"
-    module_relpath = "${path.module}"
-    runtime        = "${var.runtime}"
-    source_path    = "${var.source_path}"
+    build_command  = var.build_command
+    build_paths    = jsonencode(var.build_paths)
+    module_relpath = path.module
+    runtime        = var.runtime
+    source_path    = var.source_path
   }
 }
 
 # Build the zip archive whenever the filename changes.
 resource "null_resource" "archive" {
   triggers = {
-    filename = "${lookup(data.external.archive.result, "filename")}"
+    filename = lookup(data.external.archive.result, "filename")
   }
 
   provisioner "local-exec" {
-    command     = "${lookup(data.external.archive.result, "build_command")}"
-    working_dir = "${path.module}"
+    command     = lookup(data.external.archive.result, "build_command")
+    working_dir = path.module
   }
 }
 
@@ -33,9 +33,9 @@ data "external" "built" {
   program = ["python", "${path.module}/built.py"]
 
   query = {
-    build_command  = "${lookup(data.external.archive.result, "build_command")}"
-    filename_old   = "${lookup(null_resource.archive.triggers, "filename")}"
-    filename_new   = "${lookup(data.external.archive.result, "filename")}"
-    module_relpath = "${path.module}"
+    build_command  = lookup(data.external.archive.result, "build_command")
+    filename_old   = lookup(null_resource.archive.triggers, "filename")
+    filename_new   = lookup(data.external.archive.result, "filename")
+    module_relpath = path.module
   }
 }
