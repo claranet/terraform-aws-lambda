@@ -20,31 +20,31 @@ resource "aws_lambda_function" "lambda" {
   # Add dynamic blocks based on variables.
 
   dynamic "dead_letter_config" {
-    for_each = var.dead_letter_config == null ? [] : [1]
+    for_each = var.dead_letter_config == null ? [] : [var.dead_letter_config]
     content {
-      target_arn = var.dead_letter_config.target_arn
+      target_arn = dead_letter_config.value.target_arn
     }
   }
 
   dynamic "environment" {
-    for_each = var.environment == null ? [] : [1]
+    for_each = var.environment == null ? [] : [var.environment]
     content {
-      variables = var.environment.variables
+      variables = environment.value.variables
     }
   }
 
   dynamic "tracing_config" {
-    for_each = var.tracing_config == null ? [] : [1]
+    for_each = var.tracing_config == null ? [] : [var.tracing_config]
     content {
-      mode = var.tracing_config.mode
+      mode = tracing_config.value.mode
     }
   }
 
   dynamic "vpc_config" {
-    for_each = var.vpc_config == null ? [] : [1]
+    for_each = var.vpc_config == null ? [] : [var.vpc_config]
     content {
-      security_group_ids = var.vpc_config.security_group_ids
-      subnet_ids         = var.vpc_config.subnet_ids
+      security_group_ids = vpc_config.value.security_group_ids
+      subnet_ids         = vpc_config.value.subnet_ids
     }
   }
 }
