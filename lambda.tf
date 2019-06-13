@@ -1,130 +1,50 @@
 resource "aws_lambda_function" "lambda" {
-  count = "${! var.attach_vpc_config && ! var.attach_dead_letter_config ? 1 : 0}"
 
-  # ----------------------------------------------------------------------------
-  # IMPORTANT:
-  # Changes made to this resource should also be made to "lambda_with_*" below.
-  # ----------------------------------------------------------------------------
-
-  function_name                  = "${var.function_name}"
-  description                    = "${var.description}"
-  role                           = "${aws_iam_role.lambda.arn}"
-  handler                        = "${var.handler}"
-  memory_size                    = "${var.memory_size}"
-  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
-  runtime                        = "${var.runtime}"
-  layers                         = "${var.layers}"
-  timeout                        = "${local.timeout}"
-  publish                        = "${local.publish}"
-  tags                           = "${var.tags}"
+  function_name                  = var.function_name
+  description                    = var.description
+  role                           = aws_iam_role.lambda.arn
+  handler                        = var.handler
+  memory_size                    = var.memory_size
+  reserved_concurrent_executions = var.reserved_concurrent_executions
+  runtime                        = var.runtime
+  layers                         = var.layers
+  timeout                        = local.timeout
+  publish                        = local.publish
+  tags                           = var.tags
 
   # Use a generated filename to determine when the source code has changed.
 
-  filename   = "${lookup(data.external.built.result, "filename")}"
-  depends_on = ["null_resource.archive"]
+  filename   = data.external.built.result.filename
+  depends_on = [null_resource.archive]
 
-  # The aws_lambda_function resource has a schema for the environment
-  # variable, where the only acceptable values are:
-  #   a. Undefined
-  #   b. An empty list
-  #   c. A list containing 1 element: a map with a specific schema
-  # Use slice to get option "b" or "c" depending on whether a non-empty
-  # value was passed into this module.
+  # Add dynamic blocks based on variables.
 
-  environment = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
-}
-
-# The vpc_config and dead_letter_config variables are lists of maps which,
-# due to a bug or missing feature of Terraform, do not work with computed
-# values. So here is a copy and paste of of the above resource for every
-# combination of these variables.
-
-resource "aws_lambda_function" "lambda_with_dl" {
-  count = "${var.attach_dead_letter_config && ! var.attach_vpc_config ? 1 : 0}"
-
-  dead_letter_config {
-    target_arn = "${var.dead_letter_config["target_arn"]}"
+  dynamic "dead_letter_config" {
+    for_each = var.dead_letter_config == null ? [] : [var.dead_letter_config]
+    content {
+      target_arn = dead_letter_config.value.target_arn
+    }
   }
 
-  # ----------------------------------------------------------------------------
-  # IMPORTANT:
-  # Everything below here should match the "lambda" resource.
-  # ----------------------------------------------------------------------------
-
-  function_name                  = "${var.function_name}"
-  description                    = "${var.description}"
-  role                           = "${aws_iam_role.lambda.arn}"
-  handler                        = "${var.handler}"
-  memory_size                    = "${var.memory_size}"
-  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
-  runtime                        = "${var.runtime}"
-  layers                         = "${var.layers}"
-  timeout                        = "${local.timeout}"
-  publish                        = "${local.publish}"
-  tags                           = "${var.tags}"
-  filename                       = "${lookup(data.external.built.result, "filename")}"
-  depends_on                     = ["null_resource.archive"]
-  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
-}
-
-resource "aws_lambda_function" "lambda_with_vpc" {
-  count = "${var.attach_vpc_config && ! var.attach_dead_letter_config ? 1 : 0}"
-
-  vpc_config {
-    security_group_ids = ["${var.vpc_config["security_group_ids"]}"]
-    subnet_ids         = ["${var.vpc_config["subnet_ids"]}"]
+  dynamic "environment" {
+    for_each = var.environment == null ? [] : [var.environment]
+    content {
+      variables = environment.value.variables
+    }
   }
 
-  # ----------------------------------------------------------------------------
-  # IMPORTANT:
-  # Everything below here should match the "lambda" resource.
-  # ----------------------------------------------------------------------------
-
-  function_name                  = "${var.function_name}"
-  description                    = "${var.description}"
-  role                           = "${aws_iam_role.lambda.arn}"
-  handler                        = "${var.handler}"
-  memory_size                    = "${var.memory_size}"
-  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
-  runtime                        = "${var.runtime}"
-  layers                         = "${var.layers}"
-  timeout                        = "${local.timeout}"
-  publish                        = "${local.publish}"
-  tags                           = "${var.tags}"
-  filename                       = "${lookup(data.external.built.result, "filename")}"
-  depends_on                     = ["null_resource.archive"]
-  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
-}
-
-resource "aws_lambda_function" "lambda_with_dl_and_vpc" {
-  count = "${var.attach_dead_letter_config && var.attach_vpc_config ? 1 : 0}"
-
-  dead_letter_config {
-    target_arn = "${var.dead_letter_config["target_arn"]}"
+  dynamic "tracing_config" {
+    for_each = var.tracing_config == null ? [] : [var.tracing_config]
+    content {
+      mode = tracing_config.value.mode
+    }
   }
 
-  vpc_config {
-    security_group_ids = ["${var.vpc_config["security_group_ids"]}"]
-    subnet_ids         = ["${var.vpc_config["subnet_ids"]}"]
+  dynamic "vpc_config" {
+    for_each = var.vpc_config == null ? [] : [var.vpc_config]
+    content {
+      security_group_ids = vpc_config.value.security_group_ids
+      subnet_ids         = vpc_config.value.subnet_ids
+    }
   }
-
-  # ----------------------------------------------------------------------------
-  # IMPORTANT:
-  # Everything below here should match the "lambda" resource.
-  # ----------------------------------------------------------------------------
-
-  function_name                  = "${var.function_name}"
-  description                    = "${var.description}"
-  role                           = "${aws_iam_role.lambda.arn}"
-  handler                        = "${var.handler}"
-  memory_size                    = "${var.memory_size}"
-  reserved_concurrent_executions = "${var.reserved_concurrent_executions}"
-  runtime                        = "${var.runtime}"
-  layers                         = "${var.layers}"
-  timeout                        = "${local.timeout}"
-  publish                        = "${local.publish}"
-  tags                           = "${var.tags}"
-  filename                       = "${lookup(data.external.built.result, "filename")}"
-  depends_on                     = ["null_resource.archive"]
-  environment                    = ["${slice( list(var.environment), 0, length(var.environment) == 0 ? 0 : 1 )}"]
 }

@@ -27,7 +27,7 @@ module "lambda" {
 
   environment = {
     variables = {
-      ARN = "${aws_iam_user.test.arn}"
+      ARN = aws_iam_user.test.arn
     }
   }
 }
