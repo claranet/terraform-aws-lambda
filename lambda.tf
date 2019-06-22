@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda" {
     }
   }
 
-  dynamic "environment" = {
+  dynamic "environment" {
     for_each = var.environment == null ? [] : [var.environment]
     content {
       variables = environment.value.variables
