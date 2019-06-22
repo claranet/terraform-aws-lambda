@@ -47,8 +47,8 @@ module "lambda" {
   }
 
   // Add environment variables.
-  environment {
-    variables {
+  environment = {
+    variables = {
       SLACK_URL = var.slack_url
     }
   }
