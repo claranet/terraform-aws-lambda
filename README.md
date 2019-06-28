@@ -42,7 +42,7 @@ module "lambda" {
   policy = data.aws_iam_policy_document.lambda.json
 
   // Add a dead letter queue.
-  dead_letter_config {
+  dead_letter_config = {
     target_arn = aws_sqs_queue.dlq.arn
   }
 
@@ -54,7 +54,7 @@ module "lambda" {
   }
 
   // Deploy into a VPC.
-  vpc_config {
+  vpc_config = {
     subnet_ids         = [aws_subnet.test.id]
     security_group_ids = [aws_security_group.test.id]
   }
