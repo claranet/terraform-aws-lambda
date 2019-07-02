@@ -37,16 +37,18 @@ variable "cloudwatch_logs" {
   default     = true
 }
 
-variable "policy" {
-  description = "An addional policy to attach to the Lambda function"
-  type        = string
-  default     = null
-}
-
 variable "lambda_at_edge" {
   description = "Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function"
   type        = bool
   default     = false
+}
+
+variable "policy" {
+  description = "An additional policy to attach to the Lambda function role"
+  type = object({
+    json = string
+  })
+  default = null
 }
 
 locals {
