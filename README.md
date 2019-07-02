@@ -69,12 +69,12 @@ Inputs for this module are the same as the [aws_lambda_function](https://www.ter
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|----------|
-| **source\_path** | The absolute path to a local file or directory containing your Lambda source code | string | | yes |
-| build\_command | The command to run to create the Lambda package zip file | string | `"python build.py '$filename' '$runtime' '$source'"` | no |
-| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | list(string) | `["build.py"]` | no |
-| cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | bool | true | no |
-| lambda\_at\_edge | Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function | bool | false | no |
-| policy | An additional policy to attach to the Lambda function role | object({json=string}) | | no |
+| **source\_path** | The absolute path to a local file or directory containing your Lambda source code | `string` | | yes |
+| build\_command | The command to run to create the Lambda package zip file | `string` | `"python build.py '$filename' '$runtime' '$source'"` | no |
+| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | `list(string)` | `["build.py"]` | no |
+| cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | `bool` | `true` | no |
+| lambda\_at\_edge | Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function | `bool` | `false` | no |
+| policy | An additional policy to attach to the Lambda function role | `object({json=string})` | | no |
 
 The following arguments from the [aws_lambda_function](https://www.terraform.io/docs/providers/aws/r/lambda_function.html) resource are not supported:
 
