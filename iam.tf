@@ -143,7 +143,7 @@ resource "aws_iam_policy" "additional" {
   count = var.policy == null ? 0 : 1
 
   name   = var.function_name
-  policy = var.policy
+  policy = var.policy.json
 }
 
 resource "aws_iam_policy_attachment" "additional" {
