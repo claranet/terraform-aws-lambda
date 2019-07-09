@@ -39,6 +39,7 @@ module "lambda" {
   source_path = "${path.module}/lambda.py"
 
   // Attach a policy.
+  attach_policy = true
   policy = {
     json = data.aws_iam_policy_document.lambda.json
   }
@@ -75,6 +76,8 @@ Inputs for this module are the same as the [aws_lambda_function](https://www.ter
 | cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | `bool` | `true` | no |
 | lambda\_at\_edge | Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function | `bool` | `false` | no |
 | policy | An additional policy to attach to the Lambda function role | `object({json=string})` | | no |
+| attach\_policy | Set this to true to attach the additional policy to the Lambda function role | `bool` | `false` | no |
+
 
 The following arguments from the [aws_lambda_function](https://www.terraform.io/docs/providers/aws/r/lambda_function.html) resource are not supported:
 
