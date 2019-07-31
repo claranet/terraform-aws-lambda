@@ -27,3 +27,9 @@ output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = "${aws_iam_role.lambda.name}"
 }
+
+output "build_result_filename" {
+  description = "Full path to the source code package with requirements installed"
+  value       = "${lookup(data.external.built.result, "filename")}"
+}
+
