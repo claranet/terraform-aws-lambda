@@ -30,5 +30,5 @@ output "role_name" {
 
 output "build_result_filename" {
   description = "Full path to the source code package with requirements installed"
-  value       = "${local.module_relpath}/${lookup(data.external.built.result, "filename")}"
+  value       = "${lookup(data.external.built.result, "filename")}"
 }
