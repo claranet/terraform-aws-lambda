@@ -51,6 +51,12 @@ variable "policy" {
   default = null
 }
 
+variable "create_resources" {
+  description = "Controls whether to create the resources in this module"
+  type        = bool
+  default     = true
+}
+
 locals {
   publish = var.lambda_at_edge ? true : var.publish
   timeout = var.lambda_at_edge ? min(var.timeout, 5) : var.timeout
