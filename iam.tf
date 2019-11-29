@@ -10,6 +10,17 @@ data "aws_iam_policy_document" "assume_role" {
       identifiers = slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1)
     }
   }
+
+  # Adding events role as trust relationship
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_role" "lambda" {
