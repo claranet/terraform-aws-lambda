@@ -52,9 +52,9 @@ variable "policy" {
 }
 
 variable "assume_roles" {
-  description = "Lambda function assume roles (trust relationship)"
+  description = "Lambda function additional assume roles (trust relationship)"
   type = list(string)
-  default = null
+  default = []
 }
 
 locals {

@@ -7,20 +7,20 @@ data "aws_iam_policy_document" "assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1)
+      identifiers = concat(slice(list("lambda.amazonaws.com", "edgelambda.amazonaws.com"), 0, var.lambda_at_edge ? 2 : 1), var.assume_roles)
     }
   }
 
-  # Adding events role as trust relationship
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+  # # Adding additional assumer roles for trust relationships
+  # statement {
+  #   effect  = "Allow"
+  #   actions = ["sts:AssumeRole"]
 
-    principals {
-      type        = "Service"
-      identifiers = var.assume_roles
-    }
-  }
+  #   principals {
+  #     type        = "Service"
+  #     identifiers = var.assume_roles
+  #   }
+  # }
 }
 
 resource "aws_iam_role" "lambda" {
