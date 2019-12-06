@@ -39,3 +39,12 @@ data "external" "built" {
     module_relpath = path.module
   }
 }
+
+resource "aws_s3_bucket_object" "lambda_package" {
+  count     = var.s3_bucket_lambda_package != null ? 1:0
+  bucket    = aws_s3_bucket.lambda_package[0].id
+  depends_on = [aws_s3_bucket.lambda_package]
+  key       = lookup(data.external.archive.result, "filename")
+  source    = data.external.built.result.filename
+  etag      = "${filemd5(data.external.built.result.filename)}"
+}
