@@ -17,6 +17,12 @@ variable "source_path" {
   type        = string
 }
 
+variable "s3_bucket_lambda_package" {
+  description = "s3 bucket to upload lambda package, and deploy lambda code from there, rather than direct post via api - enables fatter lambdas"
+  type        = string
+  default     = null
+}
+
 # Optional variables specific to this module.
 
 variable "build_command" {
