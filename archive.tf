@@ -46,5 +46,5 @@ resource "aws_s3_bucket_object" "lambda_package" {
   depends_on = [aws_s3_bucket.lambda_package]
   key       = lookup(data.external.archive.result, "filename")
   source    = data.external.built.result.filename
-  etag      = "${filemd5(data.external.built.result.filename)}"
+  etag      = filemd5(data.external.built.result.filename)
 }
