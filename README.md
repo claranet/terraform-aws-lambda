@@ -4,16 +4,24 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 
 ## Features
 
-* Only appears in the Terraform plan when there are legitimate changes.
-* Creates a standard IAM role and policy for CloudWatch Logs.
-  * You can add additional policies if required.
-* Zips up a source file or directory.
-* Installs dependencies from `requirements.txt` for Python functions.
-  * It only does this when necessary, not every time.
+* Only appears in the Terraform plan when there are legitimate changes
+* Creates a standard IAM role
+  * Policy for CloudWatch Logs
+  * Can add additional policies if required
+* Zips up a source file or directory
+* Installs dependencies from `requirements.txt` for Python functions
+  * Only does this when necessary, not every time
+* Uses Docker with [lambci docker image](https://hub.docker.com/r/lambci/lambda/) to ensure we get binaries for lambda environment when installing native extensions (numpy, scipy, pandas etc)
+* Slims the lambda
+  * Strips shared object files ca. 20% saving
+  * Remove .py, use .pyc's = faster lambda and ca. 20% saving
+  * Remove tests, info (minor savings, but why not)
+  * Remove packages that will be available in AWS lambda environment (boto3 et al) ca. 50mb (uncompressed) saving
 
 ## Requirements
 
-* Python 2.7 or higher
+* Python 3.6 or higher
+* Docker
 * Linux/Unix/Windows
 
 ## Terraform version compatibility
