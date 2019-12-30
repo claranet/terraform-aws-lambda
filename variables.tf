@@ -1,22 +1,24 @@
-# Required variables.
+# Locals
+locals {
+  publish                  = var.lambda_at_edge ? true : var.publish
+  timeout                  = var.lambda_at_edge ? min(var.timeout, 5) : var.timeout
+  s3_lifecycle_delete_days = 30
+}
 
+# Required variables.
 variable "function_name" {
   type = string
 }
-
 variable "handler" {
   type = string
 }
-
 variable "runtime" {
   type = string
 }
-
 variable "source_path" {
   description = "The absolute path to a local file or directory containing your Lambda source code"
   type        = string
 }
-
 variable "s3_bucket_lambda_package" {
   description = "s3 bucket to upload lambda package, and deploy lambda code from there, rather than direct post via api - enables fatter lambdas"
   type        = string
@@ -28,7 +30,7 @@ variable "s3_bucket_lambda_package" {
 variable "build_command" {
   description = "The command to run to create the Lambda package zip file"
   type        = string
-  default     = "python build.py '$filename' '$runtime' '$source'"
+  default     = "python3 build.py '$filename' '$runtime' '$source'"
 }
 
 variable "build_paths" {
@@ -55,11 +57,6 @@ variable "policy" {
     json = string
   })
   default = null
-}
-
-locals {
-  publish = var.lambda_at_edge ? true : var.publish
-  timeout = var.lambda_at_edge ? min(var.timeout, 5) : var.timeout
 }
 
 # Optional attributes to pass through to the resource.

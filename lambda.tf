@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "lambda" {
-  count                          = var.s3_bucket_lambda_package != null ? 0:1
+  count                          = var.s3_bucket_lambda_package != null ? 0 : 1
   function_name                  = var.function_name
   description                    = var.description
   role                           = aws_iam_role.lambda.arn
@@ -13,7 +13,7 @@ resource "aws_lambda_function" "lambda" {
   tags                           = var.tags
 
   # Use a generated filename to determine when the source code has changed.
-  filename   = data.external.built.result.filename
+  filename = data.external.built.result.filename
 
   depends_on = [null_resource.archive]
 
@@ -55,13 +55,22 @@ resource "aws_lambda_function" "lambda" {
 # since TF apparently can't predict such values until apply-time
 # see https://github.com/hashicorp/terraform/issues/12570
 resource "aws_s3_bucket" "lambda_package" {
-  count  = var.s3_bucket_lambda_package != null ? 1:0
-  bucket = var.s3_bucket_lambda_package
-  acl    = "private"
+  count         = var.s3_bucket_lambda_package != null ? 1 : 0
+  bucket        = var.s3_bucket_lambda_package
+  acl           = "private"
+  force_destroy = true
+
+  lifecycle_rule {
+    id      = "auto-delete"
+    enabled = true
+    expiration {
+      days = local.s3_lifecycle_delete_days
+    }
+  }
 }
 
 resource "aws_lambda_function" "lambda_from_s3" {
-  count                          = var.s3_bucket_lambda_package != null ? 1:0
+  count                          = var.s3_bucket_lambda_package != null ? 1 : 0
   function_name                  = var.function_name
   description                    = var.description
   role                           = aws_iam_role.lambda.arn

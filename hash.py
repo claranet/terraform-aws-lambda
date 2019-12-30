@@ -10,6 +10,10 @@ import json
 import os
 import sys
 
+# Location where the module will store zips before uploading
+# e.g. .terraform/modules/my_module_name/builds/
+DIRNAME_BUILDS = 'builds'
+
 
 def abort(message):
     """
@@ -30,7 +34,7 @@ def delete_old_archives():
     now = datetime.datetime.now()
     delete_older_than = now - datetime.timedelta(days=7)
 
-    for name in os.listdir('builds'):
+    for name in os.listdir(DIRNAME_BUILDS):
         if name.endswith('.zip'):
             try:
                 file_modified = datetime.datetime.fromtimestamp(
@@ -101,49 +105,51 @@ def update_hash(hash_obj, file_root, file_path):
             hash_obj.update(data)
 
 
-# Parse the query.
-query = json.load(sys.stdin)
-build_command = query['build_command']
-build_paths = json.loads(query['build_paths'])
-module_relpath = query['module_relpath']
-runtime = query['runtime']
-source_path = os.path.abspath(query['source_path'])
+if '__main__' == __name__:
+    # Parse the query.
+    query = json.load(sys.stdin)
+    build_command = query['build_command']
+    build_paths = json.loads(query['build_paths'])
+    module_relpath = query['module_relpath']
+    runtime = query['runtime']
+    source_path = os.path.abspath(query['source_path'])
 
-# Validate the query.
-if not source_path:
-    abort('source_path must be set.')
+    # Validate the query.
+    if not source_path:
+        abort('source_path must be set.')
 
-# Change working directory to the module path
-# so references to build.py will work.
-os.chdir(module_relpath)
+    # Change working directory to the module path
+    # so references to build.py will work.
+    os.chdir(module_relpath)
 
-# Generate a hash based on file names and content. Also use the
-# runtime value, build command, and content of the build paths
-# because they can have an effect on the resulting archive.
-content_hash = generate_content_hash([source_path] + build_paths)
-content_hash.update(runtime.encode())
-content_hash.update(build_command.encode())
+    # Generate a hash based on file names and content. Also use the
+    # runtime value, build command, and content of the build paths
+    # because they can have an effect on the resulting archive.
+    content_hash = generate_content_hash([source_path] + build_paths)
+    content_hash.update(runtime.encode())
+    content_hash.update(build_command.encode())
 
-# Generate a unique filename based on the hash.
-filename = 'builds/{content_hash}.zip'.format(
-    content_hash=content_hash.hexdigest(),
-)
+    # Generate a unique filename based on the hash.
+    filename = '{dirname_builds}/{content_hash}.zip'.format(
+        dirname_builds=DIRNAME_BUILDS,
+        content_hash=content_hash.hexdigest(),
+    )
 
-# Replace variables in the build command with calculated values.
-replacements = {
-    '$filename': filename,
-    '$runtime': runtime,
-    '$source': source_path,
-}
-for old, new in replacements.items():
-    build_command = build_command.replace(old, new)
+    # Replace variables in the build command with calculated values.
+    replacements = {
+        '$filename': filename,
+        '$runtime': runtime,
+        '$source': source_path,
+    }
+    for old, new in replacements.items():
+        build_command = build_command.replace(old, new)
 
-# Delete previous archives.
-delete_old_archives()
+    # Delete previous archives.
+    delete_old_archives()
 
-# Output the result to Terraform.
-json.dump({
-    'filename': filename,
-    'build_command': build_command,
-}, sys.stdout, indent=2)
-sys.stdout.write('\n')
+    # Output the result to Terraform.
+    json.dump({
+        'filename': filename,
+        'build_command': build_command,
+    }, sys.stdout, indent=2)
+    sys.stdout.write('\n')
