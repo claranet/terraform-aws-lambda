@@ -14,13 +14,13 @@ resource "random_id" "name" {
 }
 
 resource "aws_sqs_queue" "dlq" {
-  name = "${random_id.name.hex}"
+  name = random_id.name.hex
 }
 
 module "lambda" {
   source = "../../"
 
-  function_name = "${random_id.name.hex}"
+  function_name = random_id.name.hex
   description   = "Test dead letter queue in terraform-aws-lambda"
   handler       = "lambda.lambda_handler"
   runtime       = "python3.6"
@@ -28,9 +28,7 @@ module "lambda" {
 
   source_path = "${path.module}/lambda.py"
 
-  attach_dead_letter_config = true
-
-  dead_letter_config {
-    target_arn = "${aws_sqs_queue.dlq.arn}"
+  dead_letter_config = {
+    target_arn = aws_sqs_queue.dlq.arn
   }
 }

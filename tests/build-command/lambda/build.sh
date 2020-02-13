@@ -32,7 +32,7 @@ docker run --rm -t -v "$SOURCE_DIR:/src" -v "$ZIP_DIR:/out" lambci/lambda:build-
     cd /build &&
     pip install --progress-bar off -r requirements.txt -t . &&
     chmod -R 755 . &&
-    zip -r /out/$ZIP_NAME * &&
+    zip -r /out/$ZIP_NAME . &&
     chown \$(stat -c '%u:%g' /out) /out/$ZIP_NAME
 "
 

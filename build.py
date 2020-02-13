@@ -2,6 +2,7 @@
 # Installs dependencies with pip automatically.
 
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -104,9 +105,17 @@ def create_zip_file(source_dir, target_file):
     )
 
 
-filename = sys.argv[1]
-runtime = sys.argv[2]
-source_path = sys.argv[3]
+def dequote(value):
+    """
+    Handles quotes around values in a shell-compatible fashion.
+
+    """
+    return ' '.join(shlex.split(value))
+
+
+filename = dequote(sys.argv[1])
+runtime = dequote(sys.argv[2])
+source_path = dequote(sys.argv[3])
 
 absolute_filename = os.path.abspath(filename)
 
@@ -132,6 +141,7 @@ with tempdir() as temp_dir:
                 os.makedirs(target_dir)
             print('cp {} {}'.format(file_name, target_path))
             shutil.copyfile(file_name, target_path)
+            shutil.copymode(file_name, target_path)
 
     # Install dependencies into the temporary directory.
     if runtime.startswith('python'):

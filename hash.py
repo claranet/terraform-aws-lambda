@@ -107,7 +107,7 @@ build_command = query['build_command']
 build_paths = json.loads(query['build_paths'])
 module_relpath = query['module_relpath']
 runtime = query['runtime']
-source_path = query['source_path']
+source_path = os.path.abspath(query['source_path'])
 
 # Validate the query.
 if not source_path:

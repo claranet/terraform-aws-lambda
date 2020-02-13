@@ -16,6 +16,13 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 * Python 2.7 or higher
 * Linux/Unix/Windows
 
+## Terraform version compatibility
+
+| Module version | Terraform version |
+|----------------|-------------------|
+| 1.x.x          | 0.12.x            |
+| 0.x.x          | 0.11.x            |
+
 ## Usage
 
 ```js
@@ -32,67 +39,59 @@ module "lambda" {
   source_path = "${path.module}/lambda.py"
 
   // Attach a policy.
-  attach_policy = true
-  policy        = "${data.aws_iam_policy_document.lambda.json}"
+  policy = {
+    json = data.aws_iam_policy_document.lambda.json
+  }
 
   // Add a dead letter queue.
-  attach_dead_letter_config = true
-  dead_letter_config {
-    target_arn = "${var.dead_letter_queue_arn}"
+  dead_letter_config = {
+    target_arn = aws_sqs_queue.dlq.arn
   }
 
   // Add environment variables.
-  environment {
-    variables {
-      SLACK_URL = "${var.slack_url}"
+  environment = {
+    variables = {
+      SLACK_URL = var.slack_url
     }
   }
 
   // Deploy into a VPC.
-  attach_vpc_config = true
-  vpc_config {
-    subnet_ids         = ["${aws_subnet.test.id}"]
-    security_group_ids = ["${aws_security_group.test.id}"]
+  vpc_config = {
+    subnet_ids         = [aws_subnet.test.id]
+    security_group_ids = [aws_security_group.test.id]
   }
 }
 ```
 
-### NB - Multi-region usage
-
-IAM and Lambda function names need to be globally unique within your account.
-If you will be deploying this template to multiple regions, you must make the
-function name unique per region, for example by setting
-`function_name = "deployment-deploy-status-${data.aws_region.current.name}"`
-
 ## Inputs
 
+Inputs for this module are the same as the [aws_lambda_function](https://www.terraform.io/docs/providers/aws/r/lambda_function.html) resource with the following additional arguments:
+
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| attach\_dead\_letter\_config | Set this to true if using the dead_letter_config variable | string | `"false"` | no |
-| attach\_policy | Set this to true if using the policy variable | string | `"false"` | no |
-| attach\_vpc\_config | Set this to true if using the vpc_config variable | string | `"false"` | no |
-| build\_command | The command that creates the Lambda package zip file | string | `"python build.py '$filename' '$runtime' '$source'"` | no |
-| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | list | `<list>` | no |
-| dead\_letter\_config | Dead letter configuration for the Lambda function | map | `<map>` | no |
-| description | Description of what your Lambda function does | string | `"Managed by Terraform"` | no |
-| enable\_cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | string | `"true"` | no |
-| environment | Environment configuration for the Lambda function | map | `<map>` | no |
-| function\_name | A unique name for your Lambda function (and related IAM resources) | string | n/a | yes |
-| handler | The function entrypoint in your code | string | n/a | yes |
-| memory\_size | Amount of memory in MB your Lambda function can use at runtime | string | `"128"` | no |
-| policy | An addional policy to attach to the Lambda function | string | `""` | no |
-| reserved\_concurrent\_executions | The amount of reserved concurrent executions for this Lambda function | string | `"0"` | no |
-| runtime | The runtime environment for the Lambda function | string | n/a | yes |
-| source\_path | The source file or directory containing your Lambda source code | string | n/a | yes |
-| tags | A mapping of tags | map | `<map>` | no |
-| timeout | The amount of time your Lambda function had to run in seconds | string | `"10"` | no |
-| vpc\_config | VPC configuration for the Lambda function | map | `<map>` | no |
+|------|-------------|------|---------|----------|
+| **source\_path** | The absolute path to a local file or directory containing your Lambda source code | `string` | | yes |
+| build\_command | The command to run to create the Lambda package zip file | `string` | `"python build.py '$filename' '$runtime' '$source'"` | no |
+| build\_paths | The files or directories used by the build command, to trigger new Lambda package builds whenever build scripts change | `list(string)` | `["build.py"]` | no |
+| cloudwatch\_logs | Set this to false to disable logging your Lambda output to CloudWatch Logs | `bool` | `true` | no |
+| lambda\_at\_edge | Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function | `bool` | `false` | no |
+| policy | An additional policy to attach to the Lambda function role | `object({json=string})` | | no |
+
+The following arguments from the [aws_lambda_function](https://www.terraform.io/docs/providers/aws/r/lambda_function.html) resource are not supported:
+
+* filename (use source\_path instead)
+* role (one is automatically created)
+* s3_bucket
+* s3_key
+* s3_object_version
+* source_code_hash (changes are handled automatically)
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | function\_arn | The ARN of the Lambda function |
+| function\_invoke\_arn | The Invoke ARN of the Lambda function |
 | function\_name | The name of the Lambda function |
+| function\_qualified\_arn | The qualified ARN of the Lambda function |
 | role\_arn | The ARN of the IAM role created for the Lambda function |
 | role\_name | The name of the IAM role created for the Lambda function |
