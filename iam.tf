@@ -122,11 +122,10 @@ resource "aws_iam_policy" "network" {
   policy = "${data.aws_iam_policy_document.network.json}"
 }
 
-resource "aws_iam_policy_attachment" "network" {
+resource "aws_iam_role_policy_attachment" "network" {
   count = "${var.attach_vpc_config ? 1 : 0}"
 
-  name       = "${var.function_name}-network"
-  roles      = ["${aws_iam_role.lambda.name}"]
+  role       = "${aws_iam_role.lambda.name}"
   policy_arn = "${aws_iam_policy.network.arn}"
 }
 
