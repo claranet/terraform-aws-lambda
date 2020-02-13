@@ -9,9 +9,9 @@ provider "aws" {
 }
 
 module "nested1" {
-  source = "nested1"
+  source = "./nested1"
 }
 
 module "nested2" {
-  source = "nested2"
+  source = "./nested2"
 }

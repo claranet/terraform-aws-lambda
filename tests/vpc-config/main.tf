@@ -11,19 +11,19 @@ provider "aws" {
 resource "aws_vpc" "test" {
   cidr_block = "10.255.255.0/24"
 
-  tags {
+  tags = {
     Name = "terraform-aws-lambda-test-vpc-config"
   }
 }
 
 resource "aws_subnet" "test" {
-  vpc_id     = "${aws_vpc.test.id}"
-  cidr_block = "${aws_vpc.test.cidr_block}"
+  vpc_id     = aws_vpc.test.id
+  cidr_block = aws_vpc.test.cidr_block
 }
 
 resource "aws_security_group" "test" {
   name   = "terraform-aws-lambda-test-vpc-config"
-  vpc_id = "${aws_vpc.test.id}"
+  vpc_id = aws_vpc.test.id
 }
 
 module "lambda" {
@@ -37,10 +37,8 @@ module "lambda" {
 
   source_path = "${path.module}/lambda.py"
 
-  attach_vpc_config = true
-
-  vpc_config {
-    subnet_ids         = ["${aws_subnet.test.id}"]
-    security_group_ids = ["${aws_security_group.test.id}"]
+  vpc_config = {
+    subnet_ids         = [aws_subnet.test.id]
+    security_group_ids = [aws_security_group.test.id]
   }
 }
