@@ -51,8 +51,8 @@ variable "policy" {
   default = null
 }
 
-variable "assume_roles" {
-  description = "Lambda function additional assume roles (trust relationship)"
+variable "trusted_entities" {
+  description = "Lambda function additional trusted entities for assuming roles (trust relationship)"
   type = list(string)
   default = []
 }
