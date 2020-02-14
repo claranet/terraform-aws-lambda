@@ -55,7 +55,7 @@ module "lambda_with_computed_policy_add_trust_relationships" {
 
   source_path = "${path.module}/lambda.py"
 
-  assume_roles = ["events.amazonaws.com"]
+  trusted_entities = ["events.amazonaws.com"]
 
   policy = {
     json = data.aws_iam_policy_document.computed.json
@@ -73,7 +73,7 @@ module "lambda_with_known_policy_add_trust_relationships" {
 
   source_path = "${path.module}/lambda.py"
 
-  assume_roles = ["events.amazonaws.com"]
+  trusted_entities = ["events.amazonaws.com"]
 
   policy = {
     json = data.aws_iam_policy_document.known.json
@@ -91,7 +91,7 @@ module "lambda_without_policy_add_trust_relationships" {
 
   source_path = "${path.module}/lambda.py"
 
-  assume_roles = ["events.amazonaws.com"]
+  trusted_entities = ["events.amazonaws.com"]
 }
 
 module "lambda_without_policy_without_added_trust_relationships" {
