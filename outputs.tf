@@ -27,3 +27,13 @@ output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = aws_iam_role.lambda.name
 }
+
+output "cloudwatch_log_group_arn" {
+  description = "The ARN of the log group created for this Lambda if logging is enabled."
+  value       = aws_cloudwatch_log_group.lambda[0].arn
+}
+
+output "cloudwatch_log_group_name" {
+  description = "The name of the log group created for this Lambda if logging is enabled."
+  value       = aws_cloudwatch_log_group.lambda[0].name
+}

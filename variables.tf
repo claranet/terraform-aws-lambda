@@ -37,6 +37,29 @@ variable "cloudwatch_logs" {
   default     = true
 }
 
+variable "create_log_group" {
+  description = "Whether or not to create the log group for the Lambda function. If the Lambda has been ran with logging enabled prior to this option being enabled Terraform will fail as the log group will already exist. In this case you will have to import the log group using a command like: terraform import module.lambda.aws_cloudwatch_log_group.lambda /aws/lambda/lambda_function_name. Also note that if you disable this option or remove the module Terraform will want to remove the log group and it's associated logs. To keep the log group and its logs please ensure that you either remove module.lambda.aws_cloudwatch_log_group.lambda from the state or move it to somewhere else in the state using either terraform state rm or terraform state mv."
+  type        = bool
+  default     = false
+}
+variable "log_group_retention" {
+  description = "The retention time of the Cloudwatch Log group that the Lambda logs to if create_log_group is enabled."
+  type        = string
+  default     = null
+}
+
+variable "log_group_kms_key_id" {
+  description = "The ID of a KMS key to use for encrypting the logs for the log group used by the Lambda if create_log_group is enabled."
+  type        = string
+  default     = null
+}
+
+variable "log_group_tags" {
+  description = "The tags to assign to the log group for the Lambda if create_log_group is enabled. This needs to be a list of maps of strings."
+  type        = list(map(string))
+  default     = null
+}
+
 variable "lambda_at_edge" {
   description = "Set this to true if using Lambda@Edge, to enable publishing, limit the timeout, and allow edgelambda.amazonaws.com to invoke the function"
   type        = bool
@@ -53,8 +76,8 @@ variable "policy" {
 
 variable "trusted_entities" {
   description = "Lambda function additional trusted entities for assuming roles (trust relationship)"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 locals {
