@@ -13,6 +13,8 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "lambda" {
+  count = var.create_resources ? 1 : 0
+
   name               = var.function_name
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = var.tags
@@ -54,24 +56,28 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_iam_policy" "logs" {
-  count = var.cloudwatch_logs ? 1 : 0
+  count = var.cloudwatch_logs && var.create_resources ? 1 : 0
 
   name   = "${var.function_name}-logs"
   policy = data.aws_iam_policy_document.logs[0].json
 }
 
 resource "aws_iam_policy_attachment" "logs" {
-  count = var.cloudwatch_logs ? 1 : 0
+  count = var.cloudwatch_logs && var.create_resources ? 1 : 0
 
   name       = "${var.function_name}-logs"
-  roles      = [aws_iam_role.lambda.name]
+  roles      = [aws_iam_role.lambda[count.index].name]
   policy_arn = aws_iam_policy.logs[0].arn
 }
 
 # Attach an additional policy required for the dead letter config.
+locals {
+  create_dead_letter = var.dead_letter_config != null
+}
+
 
 data "aws_iam_policy_document" "dead_letter" {
-  count = var.dead_letter_config == null ? 0 : 1
+  count = local.create_dead_letter && var.create_resources ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -88,24 +94,27 @@ data "aws_iam_policy_document" "dead_letter" {
 }
 
 resource "aws_iam_policy" "dead_letter" {
-  count = var.dead_letter_config == null ? 0 : 1
+  count = local.create_dead_letter && var.create_resources ? 1 : 0
 
   name   = "${var.function_name}-dl"
   policy = data.aws_iam_policy_document.dead_letter[0].json
 }
 
 resource "aws_iam_policy_attachment" "dead_letter" {
-  count = var.dead_letter_config == null ? 0 : 1
+  count = local.create_dead_letter && var.create_resources ? 1 : 0
 
   name       = "${var.function_name}-dl"
-  roles      = [aws_iam_role.lambda.name]
+  roles      = [aws_iam_role.lambda[count.index].name]
   policy_arn = aws_iam_policy.dead_letter[0].arn
 }
 
 # Attach an additional policy required for the VPC config
+locals {
+  create_vpc_config = var.vpc_config != null
+}
 
 data "aws_iam_policy_document" "network" {
-  count = var.vpc_config == null ? 0 : 1
+  count = local.create_vpc_config && var.create_resources ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -123,33 +132,36 @@ data "aws_iam_policy_document" "network" {
 }
 
 resource "aws_iam_policy" "network" {
-  count = var.vpc_config == null ? 0 : 1
+  count = local.create_vpc_config && var.create_resources ? 1 : 0
 
   name   = "${var.function_name}-network"
   policy = data.aws_iam_policy_document.network[0].json
 }
 
 resource "aws_iam_policy_attachment" "network" {
-  count = var.vpc_config == null ? 0 : 1
+  count = local.create_vpc_config && var.create_resources ? 1 : 0
 
   name       = "${var.function_name}-network"
-  roles      = [aws_iam_role.lambda.name]
+  roles      = [aws_iam_role.lambda[count.index].name]
   policy_arn = aws_iam_policy.network[0].arn
 }
 
 # Attach an additional policy if provided.
+locals {
+  attach_policy = var.policy != null
+}
 
 resource "aws_iam_policy" "additional" {
-  count = var.policy == null ? 0 : 1
+  count = local.attach_policy && var.create_resources ? 1 : 0
 
   name   = var.function_name
   policy = var.policy.json
 }
 
 resource "aws_iam_policy_attachment" "additional" {
-  count = var.policy == null ? 0 : 1
+  count = local.attach_policy && var.create_resources ? 1 : 0
 
   name       = var.function_name
-  roles      = [aws_iam_role.lambda.name]
+  roles      = [aws_iam_role.lambda[count.index].name]
   policy_arn = aws_iam_policy.additional[0].arn
 }
