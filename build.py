@@ -159,6 +159,11 @@ with tempdir() as temp_dir:
                     '--target=.',
                     '--requirement=requirements.txt',
                 )
+    if runtime.startswith('node'):
+        packageJson = os.path.join(temp_dir, 'package.json')
+        if os.path.exists(packageJson):
+            with cd(temp_dir):
+                run('npm','install',)
 
     # Zip up the temporary directory and write it to the target filename.
     # This will be used by the Lambda function as the source code package.
