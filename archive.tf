@@ -19,7 +19,7 @@ resource "null_resource" "archive" {
   }
 
   provisioner "local-exec" {
-    command     = lookup(data.external.archive.result, "build_command")
+    command     = var.silent ? join(" ", lookup(data.external.archive.result, "build_command"), "&>/dev/null") : lookup(data.external.archive.result, "build_command")
     working_dir = path.module
   }
 }
@@ -33,7 +33,7 @@ data "external" "built" {
   program = ["python", "${path.module}/built.py"]
 
   query = {
-    build_command  = lookup(data.external.archive.result, "build_command")
+    build_command  = var.silent ? join(" ", lookup(data.external.archive.result, "build_command"), "&>/dev/null") : lookup(data.external.archive.result, "build_command")
     filename_old   = lookup(null_resource.archive.triggers, "filename")
     filename_new   = lookup(data.external.archive.result, "filename")
     module_relpath = path.module
