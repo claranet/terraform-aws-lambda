@@ -31,6 +31,16 @@ variable "build_paths" {
   default     = ["build.py"]
 }
 
+variable "rebuild" {
+  description = "Force rebuild"
+  type        = bool
+}
+
+variable "published_filename" {
+  description = "The filename of last published build of the source code"
+  type        = string
+}
+
 variable "cloudwatch_logs" {
   description = "Set this to false to disable logging your Lambda output to CloudWatch Logs"
   type        = bool
@@ -53,8 +63,8 @@ variable "policy" {
 
 variable "trusted_entities" {
   description = "Lambda function additional trusted entities for assuming roles (trust relationship)"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 locals {

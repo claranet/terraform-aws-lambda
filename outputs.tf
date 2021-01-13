@@ -23,6 +23,11 @@ output "role_arn" {
   value       = aws_iam_role.lambda.arn
 }
 
+output "filename" {
+  description = "The filename of the Lambda function"
+  value       = lookup(null_resource.archive.triggers, "filename")
+}
+
 output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = aws_iam_role.lambda.name

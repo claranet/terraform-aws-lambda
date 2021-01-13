@@ -1,5 +1,11 @@
 # Generates a filename for the zip archive based on the contents of the files
 # in source_path. The filename will change when the source code changes.
+locals {
+  rebuild = var.rebuild == true || var.published_filename == ""
+  new_filename = local.rebuild ? lookup(data.external.archive.result, "filename") : var.published_filename
+  old_filename = local.rebuild ? lookup(null_resource.archive.triggers, "filename") : var.published_filename
+}
+
 data "external" "archive" {
   program = ["python", "${path.module}/hash.py"]
 
@@ -15,7 +21,7 @@ data "external" "archive" {
 # Build the zip archive whenever the filename changes.
 resource "null_resource" "archive" {
   triggers = {
-    filename = lookup(data.external.archive.result, "filename")
+    filename = local.new_filename
   }
 
   provisioner "local-exec" {
@@ -34,8 +40,8 @@ data "external" "built" {
 
   query = {
     build_command  = lookup(data.external.archive.result, "build_command")
-    filename_old   = lookup(null_resource.archive.triggers, "filename")
-    filename_new   = lookup(data.external.archive.result, "filename")
+    filename_old   = local.old_filename
+    filename_new   = local.new_filename
     module_relpath = path.module
   }
 }

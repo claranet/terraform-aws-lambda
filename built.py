@@ -17,11 +17,12 @@ module_relpath = query['module_relpath']
 # If the old filename (from the Terraform state) matches the new filename
 # (from hash.py) then the source code has not changed and thus the zip file
 # should not have changed.
+filename = "{0}/{1}".format(module_relpath, filename_new)
 if filename_old == filename_new:
-    if os.path.exists(filename_new):
+    if os.path.exists(filename):
         # Update the file time so it doesn't get cleaned up,
         # which would result in an unnecessary rebuild.
-        os.utime(filename_new, None)
+        os.utime(filename, None)
     else:
         # If the file is missing, then it was probably generated on another
         # machine, or it was created a long time ago and cleaned up. This is
@@ -33,7 +34,5 @@ if filename_old == filename_new:
         subprocess.check_output(build_command, shell=True, cwd=module_relpath)
 
 # Output the filename to Terraform.
-json.dump({
-    'filename': module_relpath + '/' + filename_new,
-}, sys.stdout, indent=2)
+json.dump({ 'filename': filename }, sys.stdout, indent=2)
 sys.stdout.write('\n')

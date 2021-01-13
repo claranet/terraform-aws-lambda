@@ -1,2 +1,4 @@
 .terraform/
 *.tfstate*
+builds/**
+!builds/.gitkeep
