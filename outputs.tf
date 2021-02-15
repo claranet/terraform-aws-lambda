@@ -28,6 +28,16 @@ output "filename" {
   value       = lookup(null_resource.archive.triggers, "filename")
 }
 
+output "version" {
+  description = "The version of the Lambda function"
+  value       = lookup(random_pet.published_version.keepers, "version")
+}
+
+output "version_id" {
+  description = "The version_id of the Lambda function (required when passing the version)"
+  value       = random_pet.published_version.id
+}
+
 output "role_name" {
   description = "The name of the IAM role created for the Lambda function"
   value       = aws_iam_role.lambda.name

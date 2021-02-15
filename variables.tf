@@ -36,6 +36,16 @@ variable "rebuild" {
   type        = bool
 }
 
+variable "published_version" {
+  description = "The version of the lambda function (triggers rebuild when different from the previous)"
+  type        = string
+}
+
+variable "published_version_id" {
+  description = "The version_id of the lambda function (triggers rebuild when different from the previous)"
+  type        = string
+}
+
 variable "published_filename" {
   description = "The filename of last published build of the source code"
   type        = string
