@@ -51,6 +51,8 @@ def list_files(top_path):
     results = []
 
     for root, dirs, files in os.walk(top_path):
+        if root.endswith("__pycache__"):
+            continue
         for file_name in files:
             file_path = os.path.join(root, file_name)
             relative_path = os.path.relpath(file_path, top_path)
