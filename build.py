@@ -159,6 +159,8 @@ with tempdir() as temp_dir:
                     'install',
                     '--prefix=',
                     '--target=.',
+                    '--python-version={}'.format(runtime[6:]),
+                    '--only-binary=:all:',
                     '--requirement=requirements.txt',
                 )
 
