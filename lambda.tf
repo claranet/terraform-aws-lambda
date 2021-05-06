@@ -1,8 +1,9 @@
 resource "aws_lambda_function" "lambda" {
+  count = var.create_resources ? 1 : 0
 
   function_name                  = var.function_name
   description                    = var.description
-  role                           = aws_iam_role.lambda.arn
+  role                           = aws_iam_role.lambda[count.index].arn
   handler                        = var.handler
   memory_size                    = var.memory_size
   reserved_concurrent_executions = var.reserved_concurrent_executions
@@ -14,7 +15,7 @@ resource "aws_lambda_function" "lambda" {
 
   # Use a generated filename to determine when the source code has changed.
 
-  filename   = data.external.built.result.filename
+  filename   = data.external.built[count.index].result.filename
   depends_on = [null_resource.archive]
 
   # Add dynamic blocks based on variables.

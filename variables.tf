@@ -53,8 +53,14 @@ variable "policy" {
 
 variable "trusted_entities" {
   description = "Lambda function additional trusted entities for assuming roles (trust relationship)"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
+}
+
+variable "create_resources" {
+  description = "Controls whether to create the resources in this module"
+  type        = bool
+  default     = true
 }
 
 locals {
