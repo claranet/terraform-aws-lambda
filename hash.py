@@ -27,6 +27,9 @@ def delete_old_archives():
 
     """
 
+    if not os.path.exists('builds'):
+        return
+    
     now = datetime.datetime.now()
     delete_older_than = now - datetime.timedelta(days=7)
 
