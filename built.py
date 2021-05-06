@@ -18,10 +18,10 @@ module_relpath = query['module_relpath']
 # (from hash.py) then the source code has not changed and thus the zip file
 # should not have changed.
 if filename_old == filename_new:
-    if os.path.exists(filename_new):
+    if os.path.exists(module_relpath + filename_new):
         # Update the file time so it doesn't get cleaned up,
         # which would result in an unnecessary rebuild.
-        os.utime(filename_new, None)
+        os.utime(module_relpath + filename_new, None)
     else:
         # If the file is missing, then it was probably generated on another
         # machine, or it was created a long time ago and cleaned up. This is
