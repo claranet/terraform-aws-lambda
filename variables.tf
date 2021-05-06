@@ -69,6 +69,11 @@ variable "description" {
   default = null
 }
 
+variable "permissions_boundary_arn" {
+  type    = string
+  default = null
+}
+
 variable "layers" {
   type    = list(string)
   default = null
