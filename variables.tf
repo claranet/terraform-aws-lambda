@@ -17,6 +17,11 @@ variable "source_path" {
   type        = string
 }
 
+variable "silent" {
+  description = "True if the output from the build should be silent"
+  type        = bool
+}
+
 # Optional variables specific to this module.
 
 variable "build_command" {
