@@ -10,6 +10,7 @@ resource "aws_lambda_function" "lambda" {
   layers                         = var.layers
   timeout                        = local.timeout
   publish                        = local.publish
+  kms_key_arn                    = var.kms_key_arn
   tags                           = var.tags
 
   # Use a generated filename to determine when the source code has changed.
