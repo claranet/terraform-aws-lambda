@@ -15,7 +15,7 @@ resource "aws_lambda_function" "lambda" {
   # Use a generated filename to determine when the source code has changed.
 
   filename   = data.external.built.result.filename
-  depends_on = [null_resource.archive]
+  depends_on = [null_resource.archive, aws_cloudwatch_log_group.lambda]
 
   # Add dynamic blocks based on variables.
 
