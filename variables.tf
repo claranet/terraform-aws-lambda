@@ -22,7 +22,7 @@ variable "source_path" {
 variable "build_command" {
   description = "The command to run to create the Lambda package zip file"
   type        = string
-  default     = "python build.py '$filename' '$runtime' '$source'"
+  default     = "python3 build.py '$filename' '$runtime' '$source'"
 }
 
 variable "build_paths" {
