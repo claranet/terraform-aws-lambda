@@ -1,3 +1,7 @@
+# _DEPRECATION WARNING_
+
+This module is lacking active maintainance and is being deprecated. Users are encouraged to migrate to the actively maintained https://github.com/terraform-aws-modules/terraform-aws-lambda community module. This repository will be marked as _archived_ but will stay online for the foreseeable future.
+
 # terraform-aws-lambda
 
 This Terraform module creates and uploads an AWS Lambda function and hides the ugly parts from you.
