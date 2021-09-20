@@ -134,3 +134,9 @@ variable "vpc_config" {
   })
   default = null
 }
+
+variable "enabled" {
+  description = "Enable or disable the Lambda resources."
+  type        = bool
+  default     = true
+}

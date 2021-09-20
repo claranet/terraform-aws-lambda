@@ -31,4 +31,6 @@ module "lambda" {
   dead_letter_config = {
     target_arn = aws_sqs_queue.dlq.arn
   }
+
+  enabled = true
 }

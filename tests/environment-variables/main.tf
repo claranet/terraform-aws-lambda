@@ -30,4 +30,6 @@ module "lambda" {
       ARN = aws_iam_user.test.arn
     }
   }
+
+  enabled = true
 }
