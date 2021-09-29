@@ -1,6 +1,8 @@
 # Generates a filename for the zip archive based on the contents of the files
 # in source_path. The filename will change when the source code changes.
 data "external" "archive" {
+  count = var.enabled ? 1 : 0
+
   program = ["python", "${path.module}/hash.py"]
 
   query = {
@@ -14,12 +16,14 @@ data "external" "archive" {
 
 # Build the zip archive whenever the filename changes.
 resource "null_resource" "archive" {
+  count = var.enabled ? 1 : 0
+
   triggers = {
-    filename = lookup(data.external.archive.result, "filename")
+    filename = lookup(data.external.archive[0].result, "filename")
   }
 
   provisioner "local-exec" {
-    command     = lookup(data.external.archive.result, "build_command")
+    command     = lookup(data.external.archive[0].result, "build_command")
     working_dir = path.module
   }
 }
@@ -30,12 +34,14 @@ resource "null_resource" "archive" {
 # deletes the Lambda function. If the file is rebuilt here, the build
 # output is unfortunately invisible.
 data "external" "built" {
+  count = var.enabled ? 1 : 0
+
   program = ["python", "${path.module}/built.py"]
 
   query = {
-    build_command  = lookup(data.external.archive.result, "build_command")
-    filename_old   = lookup(null_resource.archive.triggers, "filename")
-    filename_new   = lookup(data.external.archive.result, "filename")
+    build_command  = lookup(data.external.archive[0].result, "build_command")
+    filename_old   = lookup(null_resource.archive[0].triggers, "filename")
+    filename_new   = lookup(data.external.archive[0].result, "filename")
     module_relpath = path.module
   }
 }
