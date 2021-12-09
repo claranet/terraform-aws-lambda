@@ -18,6 +18,11 @@ output "function_qualified_arn" {
   value       = join("", aws_lambda_function.lambda.*.qualified_arn)
 }
 
+output "invoke_arn" {
+  description = "The ARN to be used for invoking the Lambda Function from API Gateway"
+  value       = "${element(concat(aws_lambda_function.lambda.*.invoke_arn, aws_lambda_function.lambda_with_dl.*.invoke_arn, aws_lambda_function.lambda_with_vpc.*.invoke_arn, aws_lambda_function.lambda_with_dl_and_vpc.*.invoke_arn), 0)}"
+}
+
 output "role_arn" {
   description = "The ARN of the IAM role created for the Lambda function"
   value       = join("", aws_iam_role.lambda.*.arn)
