@@ -27,6 +27,8 @@ This Terraform module creates and uploads an AWS Lambda function and hides the u
 | 1.x.x          | 0.12.x            |
 | 0.x.x          | 0.11.x            |
 
+Refer to the [0.x.x README](https://github.com/claranet/terraform-aws-lambda/blob/v0.12.0/README.md) for Terraform < 0.12 usage.
+
 ## Usage
 
 ```js
